@@ -1,0 +1,119 @@
+/* Checkpoints */
+.checkpoints {
+  padding-left: 0;
+  position: relative;
+}
+
+.checkpoints::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  z-index: 1;
+  border-radius: 2px;
+}
+
+.checkpoints li {
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 16px;
+  list-style: none;
+}
+
+.checkpoints li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 100%);
+  border: 3px solid var(--white);
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.3);
+  z-index: 2;
+}
+
+.cp-text {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.cp-time {
+  color: var(--text-light);
+}
+
+/* Share tracking module */
+.share-module {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 212, 170, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(224, 255, 249, 0.5) 0%, rgba(240, 249, 255, 0.5) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.share-module-title {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.share-url-input {
+  background-color: var(--white);
+  font-family: monospace;
+}
+
+/* White text enforcer - additional utility for navbar links */
+.white-text {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Utility classes */
+.mt-2 { margin-top: 0.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mt-5 { margin-top: 2rem; }
+.mb-5 { margin-bottom: 2rem; }
+
+.text-bold { font-weight: 600; }
+.text-muted { color: var(--text-light); }
+.text-small { font-size: 0.9rem; }
+
+.d-flex { display: flex; }
+.align-items-center { align-items: center; }
+.justify-content-between { justify-content: space-between; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.flex-wrap { flex-wrap: wrap; }
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(20px);
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1; 
+  }
+}

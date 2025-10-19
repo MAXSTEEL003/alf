@@ -1,0 +1,376 @@
+/* Order list enhancements */
+.order-id {
+  font-weight: 700;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  font-family: 'Courier New', monospace;
+}
+
+.order-customer {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.route-arrow {
+  display: inline-block;
+  font-weight: bold;
+  margin: 0 6px;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-state h3 {
+  margin-bottom: 12px;
+}
+
+.empty-state .btn {
+  margin-top: 20px;
+}
+
+/* Order status indicators */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.delivered {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.active {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+/* Order list with status */
+.order-list li.delivered {
+  border-left: 4px solid #16a34a;
+  opacity: 0.85;
+}
+
+/* Search container styles */
+.search-container {
+  margin-bottom: 1.5rem;
+}
+
+.search-inputs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.search-type {
+  width: auto;
+  min-width: 160px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15);
+}
+
+.empty-search-results {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-muted);
+  border-radius: var(--radius);
+  color: var(--text-light);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-light);
+  position: relative;
+  padding-left: 30px;
+}
+
+.loading-spinner::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 212, 170, 0.3);
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Animations */
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.animate-checkpoint-add {
+  animation: checkpointAdd 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes checkpointAdd {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(5px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Share module styles */
+.share-module {
+  background: linear-gradient(135deg, rgba(224, 255, 249, 0.4) 0%, rgba(240, 249, 255, 0.4) 100%);
+  border: 1px solid rgba(0, 212, 170, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.share-module-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--text-color);
+}
+
+.share-url-input {
+  background: #ffffff;
+  border: 1px solid rgba(0, 212, 170, 0.3);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.text-small {
+  font-size: 0.875rem;
+}
+
+/* Order detail styling */
+.order-details {
+  background: linear-gradient(135deg, rgba(224, 255, 249, 0.3) 0%, rgba(240, 249, 255, 0.3) 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 212, 170, 0.15);
+}
+
+.detail-label {
+  font-weight: 500;
+}
+
+.detail-value {
+  font-weight: 400;
+}
+
+/* Content wrappers */
+.content-section {
+  margin-bottom: 30px;
+}
+
+/* Utility classes */
+.text-bold {
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* Checkpoints styling - Properly aligned timeline with continuous line */
+.checkpoints {
+  padding-left: 0 !important;
+  position: relative;
+  list-style: none !important;
+  margin: 1.5rem 0;
+  display: block !important;
+  gap: unset !important;
+}
+
+/* Main timeline line - starts from first checkpoint and goes through all */
+.checkpoints::before {
+  content: '';
+  position: absolute;
+  left: 24px; /* Exact center of the dots (17px + 7px) */
+  top: 28px; /* Start from first checkpoint dot center (8px padding + 20px for center) */
+  width: 2px;
+  height: var(--line-height, 0px); /* Dynamic height based on checkpoint count */
+  background: linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+/* Hide the line if there's only one checkpoint */
+.checkpoints[style*="--checkpoints-count: 1"]::before,
+.checkpoints[style*="--checkpoints-count: 0"]::before {
+  display: none;
+}
+
+.checkpoints li {
+  position: relative;
+  padding-left: 50px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  padding-right: 0 !important;
+  margin-bottom: 20px !important;
+  list-style: none !important;
+  min-height: 40px;
+  display: block !important;
+  background: none !important;
+  border-radius: 0 !important;
+  transition: none !important;
+}
+
+.checkpoints li:hover {
+  background: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Checkpoint dots - positioned exactly on the main line */
+.checkpoints li::before {
+  content: '';
+  position: absolute;
+  left: 17px; /* Position so center (17px + 7px = 24px) aligns with main line */
+  top: 20px; /* Position to align with the calculated line spacing */
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 212, 170, 0.4);
+  border: 2px solid #ffffff;
+  z-index: 2;
+}
+
+/* Remove individual lines since we have one main line */
+.checkpoints li::after {
+  display: none;
+}
+
+.cp-text {
+  font-weight: 500 !important;
+  margin-bottom: 4px !important;
+  line-height: 1.4;
+  padding-left: 0 !important;
+  color: var(--text-color) !important;
+}
+
+.cp-time {
+  color: var(--text-muted) !important;
+  font-size: 0.875rem !important;
+  opacity: 0.8;
+  padding-left: 0 !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
