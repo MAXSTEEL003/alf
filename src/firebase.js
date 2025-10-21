@@ -31,6 +31,32 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+// Validate required Vite env vars and print a clear message if any are missing.
+// A missing env var in production (Vercel) is the most common reason the app
+// renders a blank page because runtime code can fail silently in the browser.
+{
+  const required = [
+    'VITE_FIREBASE_API_KEY',
+    'VITE_FIREBASE_AUTH_DOMAIN',
+    'VITE_FIREBASE_PROJECT_ID',
+    'VITE_FIREBASE_STORAGE_BUCKET',
+    'VITE_FIREBASE_MESSAGING_SENDER_ID',
+    'VITE_FIREBASE_APP_ID'
+  ];
+  const missing = required.filter((k) => !import.meta.env[k]);
+  if (missing.length) {
+    // eslint-disable-next-line no-console
+    console.error('Missing Firebase environment variables:', missing.join(', '));
+    // eslint-disable-next-line no-console
+    console.error(
+      'Set these in Vercel: Project → Settings → Environment Variables (use the same names prefixed with VITE_).',
+    );
+    // Helpful quick link for debugging in browser
+    // eslint-disable-next-line no-console
+    console.error('See README.md for deployment instructions.');
+  }
+}
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
