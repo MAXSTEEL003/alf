@@ -19,6 +19,29 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Fallback: if the bundle never executes, show a user-visible message -->
+    <script>
+      // This will be replaced by the app when it initializes.
+      window.__appInitialized = false;
+      // After 3s, if the app didn't set the flag, show a visible message to help debugging
+      setTimeout(() => {
+        if (!window.__appInitialized) {
+          const el = document.createElement('div')
+          el.style.position = 'fixed'
+          el.style.left = '0'
+          el.style.right = '0'
+          el.style.top = '0'
+          el.style.zIndex = '999998'
+          el.style.background = '#ff4d4f'
+          el.style.color = 'white'
+          el.style.padding = '12px'
+          el.style.fontFamily = 'sans-serif'
+          el.style.fontSize = '14px'
+          el.textContent = 'The application failed to start. Check console and network for missing assets or runtime errors.'
+          document.body.appendChild(el)
+        }
+      }, 3000)
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
