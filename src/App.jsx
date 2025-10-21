@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, NavLink, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import About from './pages/About';
-import Login from './pages/Login';
-import CreateOrder from './pages/CreateOrder';
-import ShareView from './pages/ShareView';
-import AdminTracking from './pages/AdminTracking';
-import FeedbackForm from './pages/FeedbackForm';
+const About = lazy(() => import('./pages/About'))
+const Login = lazy(() => import('./pages/Login'))
+const CreateOrder = lazy(() => import('./pages/CreateOrder'))
+const ShareView = lazy(() => import('./pages/ShareView'))
+const AdminTracking = lazy(() => import('./pages/AdminTracking'))
+const FeedbackForm = lazy(() => import('./pages/FeedbackForm'))
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/App.css';
 import './styles/additional.css';
@@ -90,11 +90,13 @@ function AdminRoutes() {
         <main className="main">
           <div className="container main-container">
             <div className="content-wrapper">
-              <Routes>
-                <Route path="/" element={<Navigate to="/admin/tracking" replace />} />
-                <Route path="/create" element={<CreateOrder />} />
-                <Route path="/tracking/*" element={<AdminTracking />} />
-              </Routes>
+              <Suspense fallback={<div>Loading admin...</div>}>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/admin/tracking" replace />} />
+                  <Route path="/create" element={<CreateOrder />} />
+                  <Route path="/tracking/*" element={<AdminTracking />} />
+                </Routes>
+              </Suspense>
             </div>
           </div>
         </main>
@@ -128,7 +130,9 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <About />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <About />
+                  </Suspense>
                 </div>
               </div>
             </main>
@@ -142,7 +146,9 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <Login />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Login />
+                  </Suspense>
                 </div>
               </div>
             </main>
@@ -157,7 +163,9 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <ShareView />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ShareView />
+                  </Suspense>
                 </div>
               </div>
             </main>
@@ -171,7 +179,9 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <FeedbackForm />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <FeedbackForm />
+                  </Suspense>
                 </div>
               </div>
             </main>
