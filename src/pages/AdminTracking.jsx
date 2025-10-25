@@ -69,7 +69,8 @@ function OrderList() {
   async function handleGenerateFeedbackLink(orderId) {
     try {
       const { token } = await createFeedbackLink(orderId);
-      const url = `${window.location.origin}/f/${token}`;
+      // Include orderId as fallback so public users can submit even if token doc isn't publicly readable
+      const url = `${window.location.origin}/f/${token}?o=${encodeURIComponent(orderId)}`;
       await navigator.clipboard.writeText(url);
       alert('Feedback link copied to clipboard');
     } catch (e) {
@@ -218,7 +219,8 @@ function OrderDetail() {
     try {
       setGeneratingFeedback(true);
       const { token } = await createFeedbackLink(order.id);
-      const url = `${window.location.origin}/f/${token}`;
+      // Append ?o=<orderId> so the public form can resolve order when reads are restricted
+      const url = `${window.location.origin}/f/${token}?o=${encodeURIComponent(order.id)}`;
       setFeedbackUrl(url);
       return url;
     } catch (e) {
