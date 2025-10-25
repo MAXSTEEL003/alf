@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getOrderById, createFeedback, getOrderIdByFeedbackToken } from '../firebase';
 import '../styles/feedback.css';
 
 export default function FeedbackForm() {
   const { id, token } = useParams();
+  const location = useLocation();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -19,8 +20,21 @@ export default function FeedbackForm() {
     async function fetchOrder() {
       try {
         let orderId = id;
+        // If route is tokenized (/f/:token), try to resolve via token first
         if (!orderId && token) {
-          orderId = await getOrderIdByFeedbackToken(token);
+          try {
+            orderId = await getOrderIdByFeedbackToken(token);
+          } catch (e) {
+            // ignore and try fallback below
+          }
+        }
+        // Fallback: accept orderId from query param (?o=ORDERID)
+        if (!orderId) {
+          const params = new URLSearchParams(location.search);
+          const o = params.get('o');
+          if (o && typeof o === 'string') {
+            orderId = o.trim();
+          }
         }
         if (!orderId) {
           setOrder(null);
@@ -36,7 +50,7 @@ export default function FeedbackForm() {
     }
     
     fetchOrder();
-  }, [id, token]);
+  }, [id, token, location.search]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +123,7 @@ export default function FeedbackForm() {
           <p>Your feedback has been submitted successfully.</p>
           <p>We appreciate you taking the time to share your experience with ALF Logistics.</p>
           
-          <Link to={`/share/${id}`} className="btn mt-4">
+          <Link to={`/share/${order?.id || id || ''}`} className="btn mt-4">
             Back to Order Tracking
           </Link>
         </div>

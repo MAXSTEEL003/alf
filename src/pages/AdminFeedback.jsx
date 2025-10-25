@@ -69,10 +69,12 @@ export default function AdminFeedback() {
         alert('Order not found');
         return;
       }
-      const { token } = await createFeedbackLink(id);
-      const origin = window.location.origin;
-      const url = `${origin}/f/${token}`;
-      setGenerated({ token, url });
+  const { token } = await createFeedbackLink(id);
+  const origin = window.location.origin;
+  // Include orderId as a fallback query param (?o=) so public reads work even if
+  // Firestore rules block reading feedbackLinks. FeedbackForm will use this.
+  const url = `${origin}/f/${token}?o=${encodeURIComponent(id)}`;
+  setGenerated({ token, url });
     } catch (e) {
       console.error('Failed to generate link', e);
       alert('Failed to generate feedback link.');
