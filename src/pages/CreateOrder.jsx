@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createOrder, testConnection, getNextOrderNumber } from '../firebase'
 import { useAuth } from '../context/AuthContext'
+import '../styles/create-order.css'
 
 export default function CreateOrder() {
   const [customer, setCustomer] = useState('')
@@ -76,35 +77,59 @@ export default function CreateOrder() {
   }
 
   return (
-    <div>
-      <h2>Create Order</h2>
-      <form onSubmit={handleSubmit} className="form">
-        <label>
-          Customer name
-          <input value={customer} onChange={e => setCustomer(e.target.value)} required />
-        </label>
+    <div className="create-order-container animate-fade-in">
+      <h2>Create New Order</h2>
+      <div className="order-form-wrapper">
+        <form onSubmit={handleSubmit} className="form">
+          <label>
+            <span>Customer Name</span>
+            <input 
+              type="text"
+              value={customer} 
+              onChange={e => setCustomer(e.target.value)} 
+              placeholder="Enter customer name"
+              required 
+            />
+          </label>
 
-        <label>
-          Origin
-          <input value={origin} onChange={e => setOrigin(e.target.value)} required />
-        </label>
+          <label>
+            <span>Origin Location</span>
+            <input 
+              type="text"
+              value={origin} 
+              onChange={e => setOrigin(e.target.value)} 
+              placeholder="Enter pickup location"
+              required 
+            />
+          </label>
 
-        <label>
-          Destination
-          <input value={destination} onChange={e => setDestination(e.target.value)} required />
-        </label>
+          <label>
+            <span>Destination Location</span>
+            <input 
+              type="text"
+              value={destination} 
+              onChange={e => setDestination(e.target.value)} 
+              placeholder="Enter delivery location"
+              required 
+            />
+          </label>
 
-        <label>
-          Items / Notes
-          <textarea value={items} onChange={e => setItems(e.target.value)} />
-        </label>
+          <label>
+            <span>Items / Notes</span>
+            <textarea 
+              value={items} 
+              onChange={e => setItems(e.target.value)} 
+              placeholder="Enter package details, items, or special instructions..."
+            />
+          </label>
 
-        <div>
-          <button type="submit" className="btn" disabled={loading}>
-            {loading ? 'Creating Order...' : 'Create Order'}
-          </button>
-        </div>
-      </form>
+          <div>
+            <button type="submit" className="btn" disabled={loading}>
+              {loading ? 'Creating Order...' : 'Create Order'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

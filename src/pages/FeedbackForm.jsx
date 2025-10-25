@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getOrderById, createFeedback } from '../firebase';
+import { getOrderById, createFeedback, getOrderIdByFeedbackToken } from '../firebase';
+import '../styles/feedback.css';
 
 export default function FeedbackForm() {
-  const { id } = useParams();
+  const { id, token } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -17,7 +18,15 @@ export default function FeedbackForm() {
   useEffect(() => {
     async function fetchOrder() {
       try {
-        const orderData = await getOrderById(id);
+        let orderId = id;
+        if (!orderId && token) {
+          orderId = await getOrderIdByFeedbackToken(token);
+        }
+        if (!orderId) {
+          setOrder(null);
+          return;
+        }
+        const orderData = await getOrderById(orderId);
         setOrder(orderData);
       } catch (error) {
         console.error("Error fetching order:", error);
@@ -27,7 +36,7 @@ export default function FeedbackForm() {
     }
     
     fetchOrder();
-  }, [id]);
+  }, [id, token]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,7 +70,7 @@ export default function FeedbackForm() {
     
     try {
       await createFeedback({
-        orderId: id,
+        orderId: order?.id || id || token || 'unknown',
         name: formData.name,
         rating: formData.rating,
         comments: formData.comments,

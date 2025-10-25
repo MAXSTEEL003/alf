@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/about.css';
 
 export default function About() {
   return (
@@ -16,25 +17,45 @@ export default function About() {
         <h3>Why Choose Us?</h3>
         <div className="features-grid">
           <div className="feature-card">
-            <div className="feature-icon">🚚</div>
+            <div className="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 8H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z"></path>
+                <path d="M12 11v6m-3-3h6"></path>
+              </svg>
+            </div>
             <h4>Reliable Shipping</h4>
             <p>We deliver your packages safely and on time, every time.</p>
           </div>
           
           <div className="feature-card">
-            <div className="feature-icon">📱</div>
+            <div className="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+              </svg>
+            </div>
             <h4>Real-time Tracking</h4>
             <p>Track your shipments in real-time with our advanced tracking system.</p>
           </div>
           
           <div className="feature-card">
-            <div className="feature-icon">🌍</div>
+            <div className="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+            </div>
             <h4>Global Coverage</h4>
             <p>We deliver to over 200 countries and territories worldwide.</p>
           </div>
           
           <div className="feature-card">
-            <div className="feature-icon">💼</div>
+            <div className="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 4V2M8 4V2"></path>
+              </svg>
+            </div>
             <h4>Business Solutions</h4>
             <p>Tailored logistics solutions for businesses of all sizes.</p>
           </div>

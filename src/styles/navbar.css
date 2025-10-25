@@ -1,0 +1,703 @@
+/* ============================================
+   NAVBAR.CSS - DEDICATED NAVIGATION STYLING
+   Enhanced with fluid animations & premium effects
+   
+   • Header base styles with dynamic effects
+   • Navigation container with glassmorphism
+   • Nav links with fluid animations
+   • Logout button with enhanced styling
+   • Admin header with premium gradients
+   • Smooth responsive design
+   
+   Import order: variables.css → core.css → navbar.css → theme.css
+   ============================================
+*/
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================
+*/
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(0, 212, 170, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(0, 212, 170, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  }
+}
+
+@keyframes link-shine {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes nav-breathe {
+  0%, 100% {
+    box-shadow: 
+      inset 0 1px 3px rgba(255, 255, 255, 0.2),
+      inset 0 -1px 2px rgba(0, 212, 170, 0.1),
+      0 8px 32px rgba(0, 0, 0, 0.15),
+      0 4px 16px rgba(0, 212, 170, 0.1);
+  }
+  50% {
+    box-shadow: 
+      inset 0 1px 3px rgba(255, 255, 255, 0.25),
+      inset 0 -1px 2px rgba(0, 212, 170, 0.15),
+      0 12px 48px rgba(0, 0, 0, 0.2),
+      0 6px 24px rgba(0, 212, 170, 0.15);
+  }
+}
+
+@keyframes link-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes active-glow {
+  0%, 100% {
+    filter: brightness(1.15) drop-shadow(0 0 10px rgba(0, 212, 170, 0.3));
+  }
+  50% {
+    filter: brightness(1.25) drop-shadow(0 0 20px rgba(0, 212, 170, 0.5));
+  }
+}
+
+/* ============================================
+   HEADER BASE STYLES
+   ============================================
+*/
+
+.header {
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease-in-out infinite;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: clamp(0.6rem, 1.8vw, 1rem) 0;
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border-bottom: 1px solid rgba(0, 212, 170, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 
+              0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(0.5rem, 1vw, 1.2rem) 0;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  flex-wrap: wrap;
+}
+
+/* Logo styling */
+.logo {
+  flex-shrink: 0;
+  animation: float-up 3s ease-in-out infinite;
+}
+
+.logo h1 {
+  font-size: clamp(1.3rem, 3.8vw, 1.8rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.6px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 
+               0 0 15px rgba(0, 212, 170, 0.25),
+               0 1px 3px rgba(0, 0, 0, 0.2);
+  animation: animate-fade-in 0.6s ease-out;
+  font-family: var(--font-family);
+  line-height: 1.1;
+  position: relative;
+}
+
+/* ============================================
+   NAVIGATION CONTAINER - Enhanced Fluid Design
+   ============================================
+*/
+
+.main-nav {
+  position: relative;
+  display: flex;
+  gap: clamp(3px, 0.6vw, 8px);
+  background: rgba(30, 37, 56, 0.8);
+  border: 1px solid rgba(0, 212, 170, 0.25);
+  border-radius: 45px;
+  padding: clamp(6px, 1.2vw, 10px);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 1px rgba(0, 212, 170, 0.05),
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(0, 212, 170, 0.1);
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.main-nav::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 170, 0.1) 0%,
+    rgba(74, 144, 226, 0.08) 50%, 
+    rgba(255, 51, 102, 0.08) 100%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.main-nav:hover {
+  background: rgba(30, 37, 56, 0.9);
+  border-color: rgba(0, 212, 170, 0.4);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 1px rgba(0, 212, 170, 0.1),
+    0 12px 35px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 212, 170, 0.15),
+    0 4px 20px rgba(0, 212, 170, 0.15);
+  transform: translateY(-1px);
+}
+
+.main-nav:hover::before {
+  opacity: 0.6;
+}
+
+/* ============================================
+   NAVIGATION LINKS - Ultra Fluid Design
+   ============================================
+*/
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: clamp(10px, 2vw, 14px) clamp(18px, 3.5vw, 28px);
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 35px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  
+  /* Ultra smooth transitions */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.4px;
+  
+  /* Enhanced typography */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-family);
+  
+  /* 3D effect preparation */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  backdrop-filter: blur(8px);
+}
+
+/* Gradient background effect */
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 170, 0.1) 0%, 
+    rgba(74, 144, 226, 0.08) 50%,
+    rgba(255, 51, 102, 0.08) 100%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+/* Shimmer effect */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.15) 50%, 
+    transparent 100%);
+  transition: left 0.6s ease;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+/* Enhanced hover effect */
+.nav-link:hover {
+  color: rgba(255, 255, 255, 1) !important;
+  background: rgba(0, 212, 170, 0.15);
+  border-color: rgba(0, 212, 170, 0.4);
+  transform: translateY(-2px);
+  text-shadow: 
+    0 2px 6px rgba(0, 212, 170, 0.3), 
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 
+    0 8px 25px rgba(0, 212, 170, 0.2),
+    0 0 0 1px rgba(0, 212, 170, 0.1);
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+}
+
+.nav-link:hover::after {
+  left: 100%;
+}
+
+.nav-link.active {
+  color: rgba(255, 255, 255, 1) !important;
+  font-weight: 700;
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 170, 0.25) 0%, 
+    rgba(74, 144, 226, 0.2) 50%,
+    rgba(0, 212, 170, 0.25) 100%);
+  border-color: rgba(0, 212, 170, 0.6);
+  text-shadow: 
+    0 2px 8px rgba(0, 212, 170, 0.4), 
+    0 1px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 
+    0 10px 30px rgba(0, 212, 170, 0.25),
+    0 0 0 1px rgba(0, 212, 170, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.nav-link.active::before {
+  opacity: 1;
+  background: linear-gradient(135deg, 
+    rgba(0, 212, 170, 0.15) 0%, 
+    rgba(74, 144, 226, 0.1) 50%,
+    rgba(255, 51, 102, 0.1) 100%);
+}
+
+/* White text class override for better consistency */
+.nav-link.white-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.nav-link.white-text:hover {
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+.nav-link.white-text.active {
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Focus/Keyboard navigation */
+.nav-link:focus-visible {
+  outline: 2.5px solid var(--primary-color);
+  outline-offset: 3px;
+  box-shadow: 
+    0 0 0 4px rgba(0, 212, 170, 0.25),
+    0 8px 25px rgba(0, 212, 170, 0.2);
+}
+
+/* Disabled state */
+.nav-link:disabled,
+.nav-link.disabled {
+  color: rgba(255, 255, 255, 0.4) !important;
+  background-color: transparent;
+  pointer-events: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================
+   LOGOUT BUTTON STYLING
+   ============================================
+*/
+
+.logout-btn {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.2));
+  border-color: rgba(239, 68, 68, 0.7);
+  text-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);
+  box-shadow: 
+    0 8px 25px rgba(239, 68, 68, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.logout-btn:hover::before {
+  left: 100%;
+}
+
+.logout-btn.active {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.3));
+  border-color: rgba(239, 68, 68, 0.8);
+  box-shadow: 
+    0 10px 35px rgba(239, 68, 68, 0.3),
+    inset 0 1px 3px rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   ADMIN HEADER SPECIFIC STYLES
+   ============================================
+*/
+
+.admin-header {
+  position: relative;
+  background: linear-gradient(135deg, #0f1729 0%, #1a2847 50%, #0a1128 100%);
+  background-size: 200% 200%;
+  animation: glow-pulse 8s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.admin-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 212, 170, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+.admin-header .logo {
+  position: relative;
+  z-index: 2;
+}
+
+.admin-header .logo h1 {
+  background: linear-gradient(135deg, #00ffb3 0%, #00d4aa 50%, #00b89f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 212, 170, 0.3));
+  letter-spacing: 1px;
+  font-weight: 900;
+}
+
+.admin-header .main-nav {
+  background: linear-gradient(135deg, rgba(15, 30, 70, 0.5), rgba(25, 50, 90, 0.4));
+  border: 1px solid rgba(0, 212, 170, 0.25);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 212, 170, 0.15),
+    0 8px 32px rgba(0, 212, 170, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-header .main-nav:hover {
+  background: linear-gradient(135deg, rgba(15, 30, 70, 0.6), rgba(25, 50, 90, 0.5));
+  border: 1px solid rgba(0, 212, 170, 0.35);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 212, 170, 0.2),
+    0 12px 40px rgba(0, 212, 170, 0.2);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================
+*/
+
+.white-text {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #00d4aa 0%, #00ffb3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0, 212, 170, 0.2));
+}
+
+.hover-lift {
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================
+*/
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0.7rem 0;
+  }
+
+  .header-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .logo h1 {
+    font-size: 1.4rem;
+    letter-spacing: 0.6px;
+  }
+
+  .nav-link {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(0, 212, 170, 0.15);
+  }
+
+  .header-container {
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+  }
+
+  .logo h1 {
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+    font-weight: 800;
+  }
+
+  /* Enhanced mobile navigation */
+  .main-nav {
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 12px;
+    gap: 6px;
+    border-radius: 40px;
+    backdrop-filter: blur(30px) saturate(160%);
+  }
+
+  .nav-link {
+    padding: 12px 18px;
+    font-size: 0.85rem;
+    border-radius: 40px;
+    min-width: auto;
+  }
+
+  .nav-link:hover {
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  .nav-link.active {
+    transform: translateY(-1px) scale(1.02);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-nav {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 10px;
+  }
+
+  .nav-link {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: calc(33.333% - 4px);
+    text-align: center;
+  }
+
+  .header {
+    padding: 0.5rem 0;
+  }
+
+  .logo h1 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: clamp(0.5rem, 1.5vw, 0.8rem) 0;
+  }
+
+  .header-container {
+    gap: clamp(0.8rem, 2vw, 1.2rem);
+    padding: clamp(0.6rem, 1.2vw, 0.8rem) 0;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .logo h1 {
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+    letter-spacing: 0.4px;
+  }
+
+  .main-nav {
+    width: 100%;
+    gap: clamp(4px, 1vw, 6px);
+    padding: clamp(5px, 1vw, 8px);
+    justify-content: center;
+    flex-wrap: nowrap;
+    border-radius: 35px;
+  }
+
+  .nav-link {
+    padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2.5vw, 16px);
+    font-size: clamp(0.8rem, 1.4vw, 0.9rem);
+    min-width: auto;
+    flex: 0 1 auto;
+    font-weight: 600;
+    border-radius: 25px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .nav-link {
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link:active {
+    transform: scale(0.98);
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.4rem 0;
+  }
+
+  .header-container {
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    flex-direction: column;
+  }
+
+  .logo h1 {
+    font-size: 1.1rem;
+    letter-spacing: 0.3px;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+  }
+
+  .main-nav {
+    gap: 3px;
+    padding: 4px;
+    width: 100%;
+    border-radius: 30px;
+  }
+
+  .nav-link {
+    padding: 7px 10px;
+    font-size: 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    transform: translateY(-1px);
+  }
+}
+
+/* ============================================
+   ANIMATION CLASSES
+   ============================================
+*/
+
+.animate-fade-in {
+  animation: animate-fade-in 0.6s ease-out;
+}
+
+.glass-effect {
+  background: rgba(30, 37, 56, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 212, 170, 0.1);
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+}
+
+/* ============================================
+   END OF NAVBAR.CSS
+   ============================================
+*/

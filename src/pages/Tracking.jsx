@@ -6,6 +6,7 @@ import {
   addCheckpointToOrder,
   deleteOrderById
 } from '../firebase'
+import '../styles/tracking.css';
 
 function OrderList() {
   const [orders, setOrders] = useState([])
@@ -90,53 +91,85 @@ function OrderDetail() {
   if (!order) return <p>Order not found.</p>
 
   return (
-    <div>
-      <h3>Order {order.id}</h3>
-      <p><strong>Customer:</strong> {order.customer}</p>
-      <p><strong>Route:</strong> {order.origin} → {order.destination}</p>
-      <p><strong>Items:</strong> {order.items || '(none)'}</p>
+    <div className="order-detail">
+      <div className="order-header">
+        <div className="order-id">{order.id}</div>
+        <h3>Order Tracking Details</h3>
+      </div>
 
-      <h4>Checkpoints</h4>
-      <ol className="checkpoints">
-        {order.checkpoints?.map(cp => (
-          <li key={cp.id}>
-            <div className="cp-text">{cp.text}</div>
-            <small className="cp-time">{new Date(cp.time).toLocaleString()}</small>
-          </li>
-        ))}
-      </ol>
+      <div className="order-info">
+        <div className="order-info-item">
+          <strong>Customer</strong>
+          <span className="order-customer">{order.customer}</span>
+        </div>
+        
+        <div className="order-info-item">
+          <strong>Route</strong>
+          <span>
+            {order.origin}
+            <span className="route-arrow">→</span>
+            {order.destination}
+          </span>
+        </div>
+        
+        <div className="order-info-item">
+          <strong>Items</strong>
+          <span>{order.items || '(none)'}</span>
+        </div>
+      </div>
+
+      <div className="checkpoints-section">
+        <h4>📍 Tracking History</h4>
+        <div className="checkpoints">
+          {order.checkpoints && order.checkpoints.length > 0 ? (
+            order.checkpoints.map(cp => (
+              <div key={cp.id}>
+                <div className="cp-text">{cp.text}</div>
+                <small className="cp-time">{new Date(cp.time).toLocaleString()}</small>
+              </div>
+            ))
+          ) : (
+            <div style={{color: 'var(--text-muted)'}}>No checkpoints yet</div>
+          )}
+        </div>
+      </div>
 
       <form onSubmit={addCheckpoint} className="form-inline">
-        <input value={note} onChange={e => setNote(e.target.value)} placeholder="New checkpoint note" />
-        <button className="btn" type="submit">Add checkpoint</button>
+        <input 
+          value={note} 
+          onChange={e => setNote(e.target.value)} 
+          placeholder="Add a checkpoint update..." 
+        />
+        <button className="btn" type="submit">Add Checkpoint</button>
       </form>
 
-      <div style={{marginTop:12, display:'flex', gap:8, alignItems:'center'}}>
+      <div style={{marginTop: 'var(--space-lg)', display:'flex', gap: 'var(--space-md)', alignItems:'center', flexWrap: 'wrap'}}>
         <button className="btn danger" onClick={removeOrder}>Delete Order</button>
 
         <button className="btn" onClick={() => { setShowShare(v => !v); if(!shareUrl) generateShareLink() }}>
-          Share tracking
+          📤 Share Tracking
         </button>
       </div>
 
       {showShare && (
-        <div style={{marginTop:12,padding:12,border:`1px solid var(--border)`,borderRadius:8,background:'#fff',maxWidth:520}}>
-          <div style={{fontWeight:600,marginBottom:8}}>Share tracking link</div>
-          <div style={{marginBottom:8,color:'var(--text-muted)'}}>Enter a phone number to open the customer's SMS app, or copy the link and send it via your preferred method.</div>
+        <div className="share-panel">
+          <div className="share-panel-title">📨 Share Tracking Link</div>
+          <div className="share-panel-description">
+            Enter a phone number to open the customer's SMS app, or copy the link and send it via your preferred method.
+          </div>
 
-          <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:8}}>
+          <div className="share-inputs">
             <input
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="+1 555 555 5555 (optional)"
-              style={{flex:1,padding:'8px',borderRadius:6,border:'1px solid var(--border)'}}
             />
-            <button className="btn" onClick={copyLink} type="button">Copy link</button>
-            <button className="btn" onClick={openSms} type="button">Send SMS</button>
+            <button className="btn" onClick={copyLink} type="button">📋 Copy Link</button>
+            <button className="btn" onClick={openSms} type="button">💬 Send SMS</button>
           </div>
 
-          <div style={{fontSize:'0.9rem',color:'var(--text-muted)'}}>Shareable link:</div>
-          <input readOnly value={shareUrl} style={{width:'100%',padding:'8px',borderRadius:6,border:'1px solid var(--border)',marginTop:6}} />
+          <div className="share-link-label">Shareable Link:</div>
+          <input readOnly value={shareUrl} className="share-link-input" />
         </div>
       )}
     </div>

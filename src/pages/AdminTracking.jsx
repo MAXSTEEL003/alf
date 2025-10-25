@@ -7,9 +7,11 @@ import {
   deleteOrderById,
   completeOrder,
   searchOrdersByCustomer,
-  searchOrdersById
+  searchOrdersById,
+  createFeedbackLink
 } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+import '../styles/admin-tracking.css';
 
 function OrderList() {
   const [orders, setOrders] = useState([]);
@@ -64,6 +66,18 @@ function OrderList() {
     }
   };
 
+  async function handleGenerateFeedbackLink(orderId) {
+    try {
+      const { token } = await createFeedbackLink(orderId);
+      const url = `${window.location.origin}/f/${token}`;
+      await navigator.clipboard.writeText(url);
+      alert('Feedback link copied to clipboard');
+    } catch (e) {
+      console.error('Failed to generate feedback link', e);
+      alert('Failed to generate feedback link.');
+    }
+  }
+
   // Show loading while checking authentication
   if (authLoading) return <div className="loading-spinner">Loading...</div>;
 
@@ -73,7 +87,7 @@ function OrderList() {
   if (loading) return <div className="loading-spinner">Searching...</div>;
 
   if (!orders.length) return (
-    <div className="empty-state card">
+    <div className="empty-state">
       <h3>No Orders Found</h3>
       <p>You don't have any orders yet. Create one to get started.</p>
       <Link to="/admin/create" className="btn">Create New Order</Link>
@@ -81,14 +95,14 @@ function OrderList() {
   );
 
   return (
-    <div className="animate-slide-up">
-      <div className="d-flex align-items-center justify-content-between mb-4">
+    <div className="admin-tracking-container">
+      <div className="order-list-header">
         <h3>Order Management</h3>
         <Link to="/admin/create" className="btn">Create New Order</Link>
       </div>
 
-      <div className="search-container mb-4">
-        <div className="search-inputs d-flex gap-2">
+      <div className="search-container">
+        <div className="search-inputs">
           <select 
             value={searchType} 
             onChange={(e) => setSearchType(e.target.value)}
@@ -116,7 +130,7 @@ function OrderList() {
       {filteredOrders.length === 0 ? (
         <div className="empty-search-results">
           <p>No orders match your search criteria.</p>
-          <button onClick={() => setFilteredOrders(orders)} className="btn outline small">
+          <button onClick={() => setFilteredOrders(orders)} className="btn">
             Show All Orders
           </button>
         </div>
@@ -125,9 +139,9 @@ function OrderList() {
           {filteredOrders.map(order => (
             <li key={order.id} className={order.status === 'delivered' ? 'delivered' : ''}>
               <div>
-                <div className="order-id mb-2">{order.id}</div>
+                <div className="order-id">{order.id}</div>
                 <div className="order-customer">{order.customer}</div>
-                <div className="order-route text-muted">
+                <div className="order-route">
                   {order.origin} <span className="route-arrow">→</span> {order.destination}
                 </div>
                 {order.status === 'delivered' && (
@@ -135,7 +149,16 @@ function OrderList() {
                 )}
               </div>
               <div className="order-actions">
-                <Link to={`/admin/tracking/${order.id}`} className="btn outline">View Details</Link>
+                <div className="d-flex gap-2">
+                  <Link to={`/admin/tracking/${order.id}`} className="btn small">View Details</Link>
+                  <button
+                    type="button"
+                    className="btn small secondary"
+                    onClick={() => handleGenerateFeedbackLink(order.id)}
+                  >
+                    Generate Feedback Link
+                  </button>
+                </div>
               </div>
             </li>
           ))}
@@ -153,6 +176,8 @@ function OrderDetail() {
   const [showShare, setShowShare] = useState(false);
   const [phone, setPhone] = useState('');
   const [shareUrl, setShareUrl] = useState('');
+  const [feedbackUrl, setFeedbackUrl] = useState('');
+  const [generatingFeedback, setGeneratingFeedback] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -188,6 +213,23 @@ function OrderDetail() {
     return url;
   }
 
+  async function generateFeedbackLink() {
+    if (!order) return '';
+    try {
+      setGeneratingFeedback(true);
+      const { token } = await createFeedbackLink(order.id);
+      const url = `${window.location.origin}/f/${token}`;
+      setFeedbackUrl(url);
+      return url;
+    } catch (e) {
+      console.error('Error generating feedback link', e);
+      alert('Failed to generate feedback link.');
+      return '';
+    } finally {
+      setGeneratingFeedback(false);
+    }
+  }
+
   async function copyLink() {
     const url = shareUrl || generateShareLink();
     try {
@@ -198,14 +240,18 @@ function OrderDetail() {
     }
   }
 
-  function openSms() {
+  async function openSms() {
     if (!phone.trim()) {
       alert('Please enter a phone number first');
       return;
     }
     
     const url = shareUrl || generateShareLink();
-    const body = encodeURIComponent(`Track your order from ALF Logistics: ${url}\n\nPlease share your feedback after delivery.`);
+    const fb = feedbackUrl || await generateFeedbackLink();
+    const body = encodeURIComponent(
+      `Track your order from ALF Logistics: ${url}` +
+      (fb ? `\nFeedback: ${fb}` : `\nPlease share your feedback after delivery.`)
+    );
     const smsHref = `sms:${phone}?body=${body}`;
     window.location.href = smsHref;
   }
@@ -307,7 +353,7 @@ function OrderDetail() {
       </div>
 
       <h4>Shipment Progress</h4>
-      <ol 
+      <div 
         className="checkpoints" 
         style={{
           '--checkpoints-count': order.checkpoints?.length || 0,
@@ -317,12 +363,12 @@ function OrderDetail() {
         }}
       >
         {order.checkpoints?.map((cp, index) => (
-          <li key={cp.id} className={index === order.checkpoints.length - 1 ? 'animate-checkpoint-add' : ''}>
+          <div key={cp.id} className={index === order.checkpoints.length - 1 ? 'animate-checkpoint-add' : ''}>
             <div className="cp-text">{cp.text}</div>
             <small className="cp-time">{new Date(cp.time).toLocaleString()}</small>
-          </li>
+          </div>
         ))}
-      </ol>
+      </div>
 
       {!isDelivered && (
         <form onSubmit={addCheckpoint} className="form-inline mb-4">
@@ -394,9 +440,42 @@ function OrderDetail() {
             className="share-url-input" 
             onClick={e => e.target.select()}
           />
+
+          <div className="d-flex gap-2 align-items-center mt-3">
+            <button
+              className="btn small secondary"
+              type="button"
+              onClick={generateFeedbackLink}
+              disabled={generatingFeedback}
+            >
+              {generatingFeedback ? 'Generating…' : 'Generate Feedback Link'}
+            </button>
+            <button
+              className="btn small"
+              type="button"
+              onClick={async () => {
+                try {
+                  const url = feedbackUrl || await generateFeedbackLink();
+                  if (!url) return;
+                  await navigator.clipboard.writeText(url);
+                  alert('Feedback link copied');
+                } catch (_) {}
+              }}
+            >
+              Copy Feedback Link
+            </button>
+          </div>
+
+          <div className="text-small text-muted mb-2 mt-2">Feedback link:</div>
+          <input 
+            readOnly 
+            value={feedbackUrl} 
+            className="share-url-input" 
+            onClick={e => e.target.select()}
+          />
           
           <div className="text-small text-muted mt-3">
-            This link includes the order tracking page and customer feedback form.
+            Share both links for the best experience. The tracking link shows real-time updates; the feedback link allows customers to rate and comment after delivery.
           </div>
         </div>
       )}

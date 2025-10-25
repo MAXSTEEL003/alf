@@ -1,0 +1,174 @@
+/* ============================================
+   DESIGN SYSTEM - VARIABLES & TOKENS
+   ============================================
+   Premium, optimized color palette and spacing system
+   All values are carefully tuned for visual hierarchy
+*/
+
+:root {
+  /* === COLOR PALETTE === */
+  /* Primary gradient (Teal → Cyan) */
+  --primary-color: #00D4AA;
+  --primary: #00D4AA;
+  --primary-dark: #00A885;
+  --primary-light: #40FFD4;
+  --primary-ultra: #7FFFDB;
+
+  /* Accent (Vibrant Red/Pink) */
+  --accent-color: #FF3366;
+  --accent: #FF3366;
+  --accent-dark: #E62852;
+
+  /* Status colors */
+  --success-color: #10b981;
+  --success: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --danger: #ef4444;
+  --info-color: #3b82f6;
+
+  /* Background gradient stops */
+  --gradient-start: #00D4AA;
+  --gradient-mid: #4A90E2;
+  --gradient-end: #FF3366;
+
+  /* === BACKGROUND PALETTE === */
+  --background: #151B2B;
+  --background-alt: #0F1219;
+  --dark-bg: #111827;
+  --darker-bg: #0B0F1A;
+  --card-bg: #1E2538;
+  --card-bg-light: #242E43;
+
+  /* === TEXT PALETTE === */
+  --text-color: #F0F4FF;
+  --text-light: #94A3B8;
+  --text-lighter: #64748B;
+  --text-on-dark: #FFFFFF;
+  --text-muted: #475569;
+
+  /* === SEMANTIC COLORS === */
+  --border-color: #3A3F55;
+  --border-subtle: #2D3748;
+  --divider: rgba(255, 255, 255, 0.05);
+
+  /* === SHADOW SYSTEM === */
+  --shadow-xs: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 4px 12px rgba(0, 212, 170, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 212, 170, 0.12);
+  --shadow-lg: 0 12px 36px rgba(0, 212, 170, 0.18);
+  --shadow-xl: 0 20px 48px rgba(0, 212, 170, 0.25);
+  --shadow: 0 8px 32px rgba(0, 212, 170, 0.15);
+  --shadow-sm: 0 4px 12px rgba(0, 212, 170, 0.1);
+  --card-shadow: 0 12px 36px rgba(0, 212, 170, 0.2), 0 0 0 1px rgba(0, 212, 170, 0.1);
+  --hover-shadow: 0 20px 48px rgba(0, 212, 170, 0.3), 0 0 0 2px rgba(0, 212, 170, 0.2);
+  --inset-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  --focus-shadow: 0 0 0 4px rgba(0, 212, 170, 0.1), 0 0 0 2px var(--primary-color);
+
+  /* === SPACING SCALE === */
+  /* Follows 8px base unit for consistency */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* === BORDER RADIUS === */
+  --radius-sm: 0.375rem;
+  --radius: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-full: 9999px;
+
+  /* === TYPOGRAPHY === */
+  --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-mono: 'Courier New', 'Courier', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0.015em;
+  --letter-spacing-wide: 0.05em;
+
+  /* === TRANSITION & ANIMATION === */
+  --transition-fast: 0.15s;
+  --transition-base: 0.2s;
+  --transition-medium: 0.3s;
+  --transition-slow: 0.5s;
+  --transition-slower: 0.8s;
+
+  --easing-linear: linear;
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --easing-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+  --transition: all var(--transition-medium) var(--easing-in-out);
+  --transition-bounce: all var(--transition-medium) var(--easing-bounce);
+  --transition-smooth: all var(--transition-slow) var(--easing-in-out);
+
+  /* === ANIMATION DURATIONS === */
+  --motion-duration-fast: 180ms;
+  --motion-duration-medium: 350ms;
+  --motion-duration-long: 600ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === CONTAINER QUERIES === */
+  --container-max-width: 1280px;
+  --container-padding: 1rem;
+  
+  /* === Z-INDEX SCALE === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+
+  /* === BACKDROP EFFECTS === */
+  --backdrop-blur: blur(12px);
+  --backdrop-blur-sm: blur(4px);
+  --backdrop-blur-lg: blur(20px);
+}
+
+/* Responsive typography adjustments */
+@media (max-width: 768px) {
+  :root {
+    --font-size-3xl: 1.5rem;
+    --font-size-4xl: 1.875rem;
+    --container-padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-3xl: 1.25rem;
+    --font-size-4xl: 1.5rem;
+    --container-padding: 0.5rem;
+    --space-3xl: 2rem;
+  }
+}

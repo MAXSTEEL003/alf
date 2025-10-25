@@ -2,18 +2,16 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, NavLink, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 const About = lazy(() => import('./pages/About'))
+const Home = lazy(() => import('./pages/Home'))
 const Login = lazy(() => import('./pages/Login'))
 const CreateOrder = lazy(() => import('./pages/CreateOrder'))
 const ShareView = lazy(() => import('./pages/ShareView'))
 const AdminTracking = lazy(() => import('./pages/AdminTracking'))
+const AdminFeedback = lazy(() => import('./pages/AdminFeedback'))
+const Enquiry = lazy(() => import('./pages/Enquiry'))
 const FeedbackForm = lazy(() => import('./pages/FeedbackForm'))
 import ProtectedRoute from './components/ProtectedRoute';
-import './styles/App.css';
-import './styles/additional.css';
-import './styles/tracking.css';
-import './styles/auth.css';
-import './styles/feedback.css';
-import './styles/about.css';
+import './styles/theme.css';
 
 // Custom styles for navbar links
 const navLinkStyle = {
@@ -25,25 +23,35 @@ function AdminHeader() {
   const { logout } = useAuth();
   
   return (
-    <header className="header admin-header">
+    <header className="header admin-header glass-effect">
       <div className="container header-container">
-        <div className="logo">
-          <h1>ALF Logistics Admin</h1>
+        <div className="logo animate-fade-in">
+          <h1 className="text-gradient">ALF Logistics Admin</h1>
         </div>
         <nav className="main-nav">
           <NavLink 
-            to="/admin/create" 
-            className={({isActive}) => isActive ? "nav-link active white-text" : "nav-link white-text"}
-            style={navLinkStyle}
+            to="create" 
+            className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Create Order
           </NavLink>
           <NavLink 
-            to="/admin/tracking" 
-            className={({isActive}) => isActive ? "nav-link active white-text" : "nav-link white-text"}
-            style={navLinkStyle}
+            to="tracking" 
+            className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Order Tracking
+          </NavLink>
+          <NavLink 
+            to="enquiry" 
+            className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
+          >
+            Enquiries
+          </NavLink>
+          <NavLink 
+            to="feedback" 
+            className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
+          >
+            Feedback
           </NavLink>
           <button onClick={logout} className="nav-link logout-btn white-text">
             Logout
@@ -64,6 +72,13 @@ function PublicHeader() {
         <nav className="main-nav">
           <NavLink 
             to="/" 
+            className={({isActive}) => isActive ? "nav-link active white-text" : "nav-link white-text"}
+            style={navLinkStyle}
+          >
+            Home
+          </NavLink>
+          <NavLink 
+            to="/about" 
             className={({isActive}) => isActive ? "nav-link active white-text" : "nav-link white-text"}
             style={navLinkStyle}
           >
@@ -90,11 +105,18 @@ function AdminRoutes() {
         <main className="main">
           <div className="container main-container">
             <div className="content-wrapper">
-              <Suspense fallback={<div>Loading admin...</div>}>
+              <Suspense fallback={
+                <div className="loading glass-effect">
+                  <div className="loading-spinner glow-effect">Loading admin...</div>
+                </div>
+              }>
                 <Routes>
-                  <Route path="/" element={<Navigate to="/admin/tracking" replace />} />
-                  <Route path="/create" element={<CreateOrder />} />
-                  <Route path="/tracking/*" element={<AdminTracking />} />
+                  <Route path="/" element={<Navigate to="tracking" replace />} />
+                  <Route path="create" element={<CreateOrder />} />
+                  <Route path="tracking/*" element={<AdminTracking />} />
+                  <Route path="enquiry" element={<Enquiry />} />
+                  <Route path="feedback" element={<AdminFeedback />} />
+                  <Route path="*" element={<Navigate to="tracking" replace />} />
                 </Routes>
               </Suspense>
             </div>
@@ -108,9 +130,9 @@ function AdminRoutes() {
 
 function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer glass-effect">
       <div className="container">
-        <p>© {new Date().getFullYear()} ALF Logistics. All rights reserved.</p>
+        <p className="text-gradient">© {new Date().getFullYear()} ALF Logistics. All rights reserved.</p>
       </div>
     </footer>
   );
@@ -131,7 +153,7 @@ export default function App() {
               <div className="container main-container">
                 <div className="content-wrapper">
                   <Suspense fallback={<div>Loading...</div>}>
-                    <About />
+                    <Home />
                   </Suspense>
                 </div>
               </div>
@@ -173,6 +195,7 @@ export default function App() {
           </>
         } />
         
+        {/* Public feedback via orderId (legacy) */}
         <Route path="/feedback/:id" element={
           <>
             <PublicHeader />
@@ -181,6 +204,39 @@ export default function App() {
                 <div className="content-wrapper">
                   <Suspense fallback={<div>Loading...</div>}>
                     <FeedbackForm />
+                  </Suspense>
+                </div>
+              </div>
+            </main>
+            <Footer />
+          </>
+        } />
+
+        {/* Public feedback via tokenized link */}
+        <Route path="/f/:token" element={
+          <>
+            <PublicHeader />
+            <main className="main">
+              <div className="container main-container">
+                <div className="content-wrapper">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <FeedbackForm />
+                  </Suspense>
+                </div>
+              </div>
+            </main>
+            <Footer />
+          </>
+        } />
+
+        <Route path="/about" element={
+          <>
+            <PublicHeader />
+            <main className="main">
+              <div className="container main-container">
+                <div className="content-wrapper">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <About />
                   </Suspense>
                 </div>
               </div>

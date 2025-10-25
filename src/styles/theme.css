@@ -1,0 +1,434 @@
+/* ============================================
+   THEME.CSS - PRODUCTION-READY & OPTIMIZED
+   Premium UI system with unified design language
+   
+   • Universal base styles (reset + typography)
+   • Button system with ripple micro-interactions
+   • Form element styling
+   • Card & surface components
+   • Navigation styling with animated underlines
+   • Layout utilities and grid system
+   
+   Import order: variables.css → core.css → navbar.css → theme.css
+   ============================================
+*/
+
+@import './variables.css';
+@import './core.css';
+@import './navbar.css';
+
+/* ============================================
+   RESET & FUNDAMENTALS
+   ============================================
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(180deg, var(--background) 0%, var(--darker-bg) 100%);
+  background-attachment: fixed;
+  color: var(--text-color);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================
+*/
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin: 0;
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h4 {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+h5, h6 {
+  font-size: var(--font-size-base);
+}
+
+p {
+  margin: 0 0 var(--space-md) 0;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-base) ease;
+}
+
+a:hover {
+  color: var(--primary-light);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   BUTTON SYSTEM - Unified with Ripple Effects
+   ============================================
+*/
+
+.btn,
+button,
+input[type="submit"],
+input[type="button"],
+[role="button"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--radius-default);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-medium) ease;
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+}
+
+.btn::before,
+button::before,
+input[type="submit"]::before,
+input[type="button"]::before,
+[role="button"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.btn:active::before,
+button:active::before,
+input[type="submit"]:active::before,
+input[type="button"]:active::before,
+[role="button"]:active::before {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* Primary button */
+.btn,
+.btn-primary,
+button,
+input[type="submit"],
+input[type="button"] {
+  background: linear-gradient(135deg, var(--primary-color), #FF6B8A);
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 212, 170, 0.3);
+}
+
+.btn:hover,
+.btn-primary:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
+}
+
+.btn:active,
+.btn-primary:active,
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active {
+  transform: translateY(0) translateZ(0);
+  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.2);
+}
+
+.btn:focus-visible,
+button:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+button:disabled,
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Button sizes */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 1.125rem 2.5rem;
+  font-size: 1.125rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Button variants */
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: none;
+  padding: calc(0.75rem - 2px) calc(1.5rem - 2px);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 212, 170, 0.1);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid rgba(0, 212, 170, 0.3);
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: rgba(0, 212, 170, 0.05);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  color: white;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================
+*/
+
+input,
+select,
+textarea {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 212, 170, 0.2);
+  border-radius: var(--radius-default);
+  color: var(--text-color);
+  transition: all var(--transition-base) ease;
+  box-shadow: 0 0 0 0 rgba(0, 212, 170, 0);
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+select:hover,
+textarea:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 212, 170, 0.3);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(240, 244, 255, 0.4);
+}
+
+label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-color);
+}
+
+/* ============================================
+   GRADIENT BORDER UTILITY - STANDARDIZED
+   Use this class for all containers with gradient borders
+   ============================================
+*/
+
+.gradient-border {
+  border: 2px solid transparent;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+}
+
+.gradient-border-simple {
+  border: 2px solid transparent;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)), linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+}
+
+/* ============================================
+   CARDS & SURFACES
+   ============================================
+*/
+
+.card {
+  background: linear-gradient(180deg, rgba(30, 37, 56, 0.6), rgba(20, 25, 40, 0.4));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 212, 170, 0.1);
+  border-radius: var(--radius-default);
+  padding: var(--space-lg);
+  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.08);
+  transition: all var(--transition-medium) ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 212, 170, 0.2);
+  box-shadow: 0 12px 36px rgba(0, 212, 170, 0.15);
+}
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================
+*/
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================
+*/
+
+@media (max-width: 768px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  
+  .container {
+    padding: 0 var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  
+  .btn,
+  button,
+  input[type="submit"] {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   END OF THEME.CSS
+   ============================================
+*/

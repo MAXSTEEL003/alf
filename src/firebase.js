@@ -60,12 +60,18 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+import { setPersistence, browserLocalPersistence } from 'firebase/auth';
+
 export const auth = getAuth(app);
+// Set persistence to LOCAL to keep the user logged in
+setPersistence(auth, browserLocalPersistence);
 
 // Collection references
 const ordersCollection = collection(db, 'orders');
 const feedbackCollection = collection(db, 'feedback');
+const feedbackLinksCollection = collection(db, 'feedbackLinks');
 const countersCollection = collection(db, 'counters');
+const enquiriesCollection = collection(db, 'enquiries');
 
 // Get next order number
 export async function getNextOrderNumber() {
@@ -264,6 +270,90 @@ export async function getFeedbackByOrderId(orderId) {
     id: doc.id,
     ...doc.data()
   }));
+}
+
+export async function getAllFeedback() {
+  const q = query(feedbackCollection, orderBy('createdAt', 'desc'));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+export function subscribeFeedback(onChange) {
+  const q = query(feedbackCollection, orderBy('createdAt', 'desc'));
+  return onSnapshot(q, (snapshot) => {
+    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    onChange(list);
+  });
+}
+
+// Feedback link generation and resolution
+function generateToken(length = 10) {
+  // Simple URL-safe token: base36 + timestamp tail
+  const rand = Math.random().toString(36).slice(2);
+  const time = Date.now().toString(36).slice(-4);
+  return (rand + time).slice(0, length);
+}
+
+export async function createFeedbackLink(orderId, opts = {}) {
+  const token = generateToken(12);
+  const ref = doc(feedbackLinksCollection, token);
+  const payload = {
+    orderId,
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    ...(opts.expiresAt ? { expiresAt: opts.expiresAt } : {})
+  };
+  await setDoc(ref, payload);
+  return { token, ...payload };
+}
+
+export async function getOrderIdByFeedbackToken(token) {
+  if (!token) return null;
+  const ref = doc(db, 'feedbackLinks', token);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+  const data = snap.data();
+  // Optional: check expiry
+  if (data.expiresAt) {
+    try {
+      const exp = new Date(data.expiresAt).getTime();
+      if (Date.now() > exp) return null;
+    } catch (_) {}
+  }
+  return data.orderId || null;
+}
+
+// Enquiry operations
+export async function createEnquiry(enquiryData) {
+  try {
+    console.log('Attempting to create enquiry with data:', enquiryData);
+    const docRef = await addDoc(enquiriesCollection, {
+      ...enquiryData,
+      timestamp: serverTimestamp()
+    });
+    console.log('Enquiry created successfully with ID:', docRef.id);
+    return { id: docRef.id, ...enquiryData };
+  } catch (error) {
+    console.error('Error creating enquiry:', error);
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Full error:', JSON.stringify(error));
+    throw error;
+  }
+}
+
+export async function getAllEnquiries() {
+  try {
+    const q = query(enquiriesCollection, orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error getting enquiries:', error);
+    throw error;
+  }
 }
 
 export default db;

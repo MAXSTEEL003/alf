@@ -1,0 +1,450 @@
+/* ============================================
+   CORE CSS - ANIMATIONS & MOTION SYSTEM
+   ============================================
+   • Centralized keyframe definitions
+   • Accessibility-first motion preferences
+   • GPU-optimized animations (60fps guaranteed)
+   • Performance-critical utilities
+   
+   Import this first to make animations available
+*/
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================
+*/
+
+/* Fade in with subtle upward movement */
+@keyframes core-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* Slide in from left */
+@keyframes core-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+  }
+}
+
+/* Slide in from right */
+@keyframes core-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+  }
+}
+
+/* Slide in from top */
+@keyframes core-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(-24px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* Slide in from bottom */
+@keyframes core-slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(24px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* Scale with fade (zoom in) */
+@keyframes core-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* Elastic scale bounce */
+@keyframes core-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateZ(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+/* Glowing pulse effect */
+@keyframes core-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 212, 170, 0);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3), inset 0 0 12px rgba(0, 212, 170, 0.1);
+  }
+}
+
+/* Gentle pulse scale */
+@keyframes core-pulse {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+  }
+  50% {
+    transform: scale(1.05) translateZ(0);
+  }
+}
+
+/* Shimmer/loading effect */
+@keyframes core-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Continuous rotation */
+@keyframes core-spin {
+  to {
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+
+/* Floating effect */
+@keyframes core-float {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-8px) translateZ(0);
+  }
+}
+
+/* Flip card animation */
+@keyframes core-flip {
+  from {
+    transform: rotateY(0) translateZ(0);
+  }
+  to {
+    transform: rotateY(180deg) translateZ(0);
+  }
+}
+
+/* Gradient shift (for animated gradients) */
+@keyframes core-gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Text underline animation */
+@keyframes core-underline {
+  from {
+    width: 0;
+    left: 0;
+  }
+  to {
+    width: 100%;
+    left: 0;
+  }
+}
+
+/* Ripple effect (for buttons) */
+@keyframes core-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY - MOTION PREFERENCES
+   ============================================
+*/
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 1ms;
+    --motion-duration-medium: 1ms;
+    --motion-duration-long: 1ms;
+    --transition-fast: 1ms;
+    --transition-base: 1ms;
+    --transition-medium: 1ms;
+    --transition-slow: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   ANIMATION UTILITY CLASSES
+   ============================================
+*/
+
+/* Fade animations */
+.animate-fade-in {
+  animation: core-fade-in var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.animate-fade-in-fast {
+  animation: core-fade-in var(--motion-duration-fast) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+/* Slide animations */
+.animate-slide-in-left {
+  animation: core-slide-in-left var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+.animate-slide-in-right {
+  animation: core-slide-in-right var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+.animate-slide-in-up {
+  animation: core-slide-in-up var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+.animate-slide-in-down {
+  animation: core-slide-in-down var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+/* Scale animations */
+.animate-scale-in {
+  animation: core-scale-in var(--motion-duration-medium) var(--ease-standard) both;
+  will-change: opacity, transform;
+}
+
+.animate-bounce-in {
+  animation: core-bounce-in var(--motion-duration-medium) var(--ease-bouncy) both;
+  will-change: opacity, transform;
+}
+
+/* Glow effect */
+.animate-glow {
+  animation: core-glow 3s ease-in-out infinite;
+}
+
+/* Pulse effect */
+.animate-pulse {
+  animation: core-pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer effect */
+.animate-shimmer {
+  background-size: 1000px 100%;
+  animation: core-shimmer 2s linear infinite;
+}
+
+/* Spin effect */
+.animate-spin {
+  animation: core-spin 1s linear infinite;
+}
+
+/* Float effect */
+.animate-float {
+  animation: core-float 3s ease-in-out infinite;
+}
+
+/* Flip effect */
+.animate-flip {
+  animation: core-flip var(--motion-duration-slow) var(--ease-in-out) both;
+  perspective: 1000px;
+}
+
+/* ============================================
+   DELAY UTILITIES (Stagger animations)
+   ============================================
+*/
+
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Staggered list items */
+li:nth-child(1) { animation-delay: 0ms; }
+li:nth-child(2) { animation-delay: 50ms; }
+li:nth-child(3) { animation-delay: 100ms; }
+li:nth-child(4) { animation-delay: 150ms; }
+li:nth-child(5) { animation-delay: 200ms; }
+li:nth-child(n+6) { animation-delay: 250ms; }
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================
+*/
+
+/* GPU acceleration for smooth 60fps animations */
+.gpu-accelerate {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+}
+
+/* No layout thrashing */
+.no-layout-shift {
+  contain: layout style paint;
+}
+
+/* Smooth hover effects without jank */
+.smooth-hover {
+  transition: all 0.3s var(--easing-in-out);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ============================================
+   FOCUS & ACCESSIBILITY
+   ============================================
+*/
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High contrast focus indicator */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(0, 212, 170, 0.1);
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================
+*/
+
+.spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: core-spin 0.8s linear infinite;
+}
+
+.spinner.small {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.spinner.large {
+  width: 56px;
+  height: 56px;
+  border-width: 4px;
+}
+
+/* ============================================
+   LAYOUT HELPERS
+   ============================================
+*/
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================
+*/
+
+@media (max-width: 768px) {
+  .animate-fade-in,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in {
+    animation-duration: var(--motion-duration-fast);
+  }
+}
+
+@media (max-width: 480px) {
+  .animate-bounce-in {
+    animation: core-scale-in var(--motion-duration-fast) var(--ease-standard) both;
+  }
+}
+
+/* End of core.css */

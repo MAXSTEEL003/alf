@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getOrderById } from '../firebase';
+import '../styles/tracking.css';
 
 export default function ShareView() {
   const { id } = useParams()
@@ -79,7 +80,7 @@ export default function ShareView() {
           </div>
           
           <h3>Shipment Updates</h3>
-          <ol 
+          <div 
             className="checkpoints" 
             style={{
               '--checkpoints-count': order.checkpoints?.length || 0,
@@ -89,16 +90,16 @@ export default function ShareView() {
             }}
           >
             {order.checkpoints?.map((cp, index) => (
-              <li key={cp.id}>
+              <div key={cp.id}>
                 <div className="cp-text">{cp.text}</div>
                 <small className="cp-time">{new Date(cp.time).toLocaleString()}</small>
-              </li>
+              </div>
             ))}
             
             {!order.checkpoints?.length && (
               <div className="no-updates">No updates available yet</div>
             )}
-          </ol>
+          </div>
           
           {isDelivered && (
             <div className="feedback-prompt">
