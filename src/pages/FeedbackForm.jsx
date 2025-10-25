@@ -7,6 +7,7 @@ export default function FeedbackForm() {
   const { id, token } = useParams();
   const location = useLocation();
   const [order, setOrder] = useState(null);
+  const [resolvedOrderId, setResolvedOrderId] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -36,12 +37,20 @@ export default function FeedbackForm() {
             orderId = o.trim();
           }
         }
-        if (!orderId) {
+        // Save the resolved orderId even if we can't read the order document (due to rules)
+        setResolvedOrderId(orderId || '');
+
+        if (orderId) {
+          try {
+            const orderData = await getOrderById(orderId);
+            setOrder(orderData);
+          } catch (_) {
+            // If read fails due to security rules, keep order as null but allow feedback
+            setOrder(null);
+          }
+        } else {
           setOrder(null);
-          return;
         }
-        const orderData = await getOrderById(orderId);
-        setOrder(orderData);
       } catch (error) {
         console.error("Error fetching order:", error);
       } finally {
@@ -84,7 +93,7 @@ export default function FeedbackForm() {
     
     try {
       await createFeedback({
-        orderId: order?.id || id || token || 'unknown',
+        orderId: resolvedOrderId || order?.id || id || 'unknown',
         name: formData.name,
         rating: formData.rating,
         comments: formData.comments,
@@ -103,12 +112,13 @@ export default function FeedbackForm() {
     return <div className="loading-container">Loading...</div>;
   }
   
-  if (!order) {
+  // If we couldn't resolve any orderId from token or params, show error
+  if (!order && !resolvedOrderId) {
     return (
       <div className="feedback-container">
         <div className="feedback-card">
-          <h2>Order Not Found</h2>
-          <p>We couldn't find the order you're looking for.</p>
+          <h2>Invalid or Expired Link</h2>
+          <p>We couldn't identify the order for this feedback link.</p>
         </div>
       </div>
     );
@@ -123,7 +133,7 @@ export default function FeedbackForm() {
           <p>Your feedback has been submitted successfully.</p>
           <p>We appreciate you taking the time to share your experience with ALF Logistics.</p>
           
-          <Link to={`/share/${order?.id || id || ''}`} className="btn mt-4">
+          <Link to={`/share/${order?.id || resolvedOrderId || id || ''}`} className="btn mt-4">
             Back to Order Tracking
           </Link>
         </div>
@@ -139,10 +149,17 @@ export default function FeedbackForm() {
           Thank you for using ALF Logistics services! We'd love to hear about your experience.
         </p>
         
-        <div className="order-summary">
-          <div><strong>Order ID:</strong> {order.id}</div>
-          <div><strong>From:</strong> {order.origin} <strong>To:</strong> {order.destination}</div>
-        </div>
+        {order ? (
+          <div className="order-summary">
+            <div><strong>Order ID:</strong> {order.id}</div>
+            <div><strong>From:</strong> {order.origin} <strong>To:</strong> {order.destination}</div>
+          </div>
+        ) : (
+          <div className="order-summary">
+            <div><strong>Order ID:</strong> {resolvedOrderId}</div>
+            <div className="muted">We couldn't load order details, but you can still submit your feedback.</div>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="feedback-form">
           <div className="form-group">
