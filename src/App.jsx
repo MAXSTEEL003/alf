@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, NavLink, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 const About = lazy(() => import('./pages/About'))
-const Home = lazy(() => import('./pages/Home'))
+const Home = lazy(() => import('./pages/Home-Enhanced'))
 const Login = lazy(() => import('./pages/Login'))
 const CreateOrder = lazy(() => import('./pages/CreateOrder'))
 const ShareView = lazy(() => import('./pages/ShareView'))
@@ -15,8 +15,8 @@ import './styles/theme.css';
 
 // Custom styles for navbar links
 const navLinkStyle = {
-  color: '#ffffff',
-  textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)'
+  color: '#0F172A',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
 };
 
 function AdminHeader() {
@@ -150,13 +150,9 @@ export default function App() {
           <>
             <PublicHeader />
             <main className="main">
-              <div className="container main-container">
-                <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Home />
-                  </Suspense>
-                </div>
-              </div>
+              <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
+                <Home />
+              </Suspense>
             </main>
             <Footer />
           </>
@@ -166,9 +162,9 @@ export default function App() {
           <>
             <PublicHeader />
             <main className="main">
-              <div className="container main-container">
+                <div className="container main-container">
                 <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
                     <Login />
                   </Suspense>
                 </div>
@@ -185,7 +181,7 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
                     <ShareView />
                   </Suspense>
                 </div>
@@ -202,7 +198,7 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
                     <FeedbackForm />
                   </Suspense>
                 </div>
@@ -219,7 +215,7 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
                     <FeedbackForm />
                   </Suspense>
                 </div>
@@ -235,7 +231,7 @@ export default function App() {
             <main className="main">
               <div className="container main-container">
                 <div className="content-wrapper">
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div className="page-loading"><div className="loading-spinner">Loading...</div></div>}>
                     <About />
                   </Suspense>
                 </div>

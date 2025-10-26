@@ -58,20 +58,15 @@
 }
 
 /* ============================================
-   FORM WRAPPER - Clean glass design
+   FORM WRAPPER - Clean design
    ============================================ */
 .order-form-wrapper {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.06) 0%, 
-    rgba(255, 255, 255, 0.02) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg);
+  border: 2px solid #60A5FA;
   border-radius: clamp(16px, 3vw, 20px);
   padding: clamp(2rem, 5vw, 2.5rem);
   position: relative;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: var(--card-shadow);
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
@@ -115,15 +110,14 @@
 .form textarea {
   padding: clamp(0.875rem, 3vw, 1rem) clamp(1rem, 4vw, 1.25rem);
   border-radius: clamp(10px, 2vw, 12px);
-  border: 1px solid rgba(0, 212, 170, 0.15);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
+  border: 2px solid #60A5FA;
+  background: var(--card-bg-light);
   color: var(--text-color);
   font-size: clamp(0.95rem, 2.5vw, 1rem);
   font-family: var(--font-family);
   font-weight: 400;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .form input::placeholder,
@@ -136,17 +130,15 @@
 .form input:focus,
 .form textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  background: rgba(0, 212, 170, 0.05);
-  box-shadow: 
-    0 4px 16px rgba(0, 212, 170, 0.2),
-    0 0 0 2px rgba(0, 212, 170, 0.1);
+  border-color: #3B82F6;
+  background: rgba(59, 130, 246, 0.05);
+  box-shadow: var(--focus-shadow);
 }
 
 .form input:hover:not(:focus),
 .form textarea:hover:not(:focus) {
-  border-color: rgba(0, 212, 170, 0.25);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: #60A5FA;
+  background: rgba(59, 130, 246, 0.03);
 }
 
 /* Textarea specific enhancements */
@@ -178,16 +170,16 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: none;
+  border: 2px solid transparent;
   border-radius: clamp(10px, 2vw, 12px);
   cursor: pointer;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-  color: var(--text-on-dark);
+  background: linear-gradient(135deg, #3B82F6, #1E40AF);
+  color: white;
   position: relative;
   overflow: hidden;
   min-width: clamp(180px, 35vw, 220px);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 212, 170, 0.3);
+  box-shadow: var(--shadow);
 }
 
 .form .btn::before {
@@ -197,9 +189,7 @@
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, 
-    rgba(255, 255, 255, 0.3) 0%, 
-    rgba(255, 255, 255, 0.1) 100%);
+  background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -211,10 +201,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
-    transparent 50%, 
-    rgba(255, 255, 255, 0.1) 100%);
+  background: transparent;
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 1;
@@ -226,12 +213,13 @@
 }
 
 .form .btn:hover:not(:disabled)::after {
-  opacity: 1;
+  opacity: 0;
 }
 
 .form .btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
+  background: linear-gradient(135deg, #1E40AF, #1E3A8A);
+  box-shadow: var(--hover-shadow);
 }
 
 .form .btn:active:not(:disabled) {

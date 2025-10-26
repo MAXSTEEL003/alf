@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createEnquiry } from '../firebase';
+import ImageSlideshow from '../components/ImageSlideshow';
 import '../styles/modern-home.css';
 
 const HomeEnhanced = () => {
@@ -56,6 +57,18 @@ const HomeEnhanced = () => {
       title: 'Competitive Pricing',
       description: 'Best rates in the market with transparent pricing - no hidden costs.',
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+    },
+    {
+      icon: 'fas fa-leaf',
+      title: 'Eco-Friendly Options',
+      description: 'Carbon-neutral delivery choices and sustainable packaging solutions.',
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+      icon: 'fas fa-headset',
+      title: '24/7 Support',
+      description: 'Round-the-clock customer service to assist with all your logistics needs.',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     }
   ];
 
@@ -149,13 +162,13 @@ const HomeEnhanced = () => {
 
   return (
     <div className="modern-home">
-      {/* Enhanced Hero Section */}
-      <section className="hero-section">
-        <div className="hero-background">
-          <div className="hero-particles"></div>
-          <div className="hero-overlay"></div>
-        </div>
-        <div className="hero-content">
+      {/* Image Slideshow Hero Section with Overlay Text - Full Width */}
+      <section className="slideshow-hero">
+        {/* Slides Background */}
+        {ImageSlideshow && <ImageSlideshow />}
+        
+        {/* Content Overlay */}
+        <div className="slideshow-hero-content">
           <div className="hero-badge">
             <i className="fas fa-star"></i>
             <span>India's #1 Logistics Partner</span>
@@ -170,14 +183,16 @@ const HomeEnhanced = () => {
             From startups to enterprises, we scale with you.
           </p>
           <div className="hero-buttons">
-            <a href="#enquiry-form" className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => {
+              document.getElementById('enquiry-form')?.scrollIntoView({ behavior: 'smooth' });
+            }}>
               <i className="fas fa-rocket"></i>
               Get Instant Quote
               <div className="btn-shine"></div>
-            </a>
-            <Link to="/tracking" className="btn btn-secondary">
-              <i className="fas fa-search"></i>
-              Track Package
+            </button>
+            <Link to="/about" className="btn btn-secondary">
+              <i className="fas fa-arrow-right"></i>
+              Learn More
             </Link>
           </div>
           
@@ -199,7 +214,10 @@ const HomeEnhanced = () => {
         </div>
       </section>
 
-      {/* Enhanced Stats Section with Animation */}
+      {/* Container for rest of content */}
+      <div className="container main-container">
+        <div className="content-wrapper">
+          {/* Enhanced Stats Section with Animation */}
       <section className="stats-section">
         <div className="stats-container">
           {stats.map((stat, index) => (
@@ -290,16 +308,6 @@ const HomeEnhanced = () => {
           </div>
           
           <div className="enquiry-form-wrapper">
-            <div className="form-benefits">
-              <h3>What you get:</h3>
-              <ul>
-                <li><i className="fas fa-check"></i> Instant price calculation</li>
-                <li><i className="fas fa-check"></i> Dedicated account manager</li>
-                <li><i className="fas fa-check"></i> 24/7 priority support</li>
-                <li><i className="fas fa-check"></i> Real-time tracking</li>
-              </ul>
-            </div>
-            
             <form onSubmit={handleSubmit} className="enquiry-form">
               <div className="form-row">
                 <div className="form-group">
@@ -435,6 +443,8 @@ const HomeEnhanced = () => {
           </div>
         </div>
       </section>
+        </div>
+      </div>
     </div>
   );
 };

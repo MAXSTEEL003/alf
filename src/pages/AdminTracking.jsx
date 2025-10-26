@@ -136,34 +136,53 @@ function OrderList() {
           </button>
         </div>
       ) : (
-        <ul className="order-list">
-          {filteredOrders.map(order => (
-            <li key={order.id} className={order.status === 'delivered' ? 'delivered' : ''}>
-              <div>
-                <div className="order-id">{order.id}</div>
-                <div className="order-customer">{order.customer}</div>
-                <div className="order-route">
-                  {order.origin} <span className="route-arrow">→</span> {order.destination}
-                </div>
-                {order.status === 'delivered' && (
-                  <div className="status-badge delivered">Delivered</div>
-                )}
-              </div>
-              <div className="order-actions">
-                <div className="d-flex gap-2">
-                  <Link to={`/admin/tracking/${order.id}`} className="btn small">View Details</Link>
-                  <button
-                    type="button"
-                    className="btn small secondary"
-                    onClick={() => handleGenerateFeedbackLink(order.id)}
-                  >
-                    Generate Feedback Link
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="table-container-wrapper">
+          <div className="order-table-wrapper">
+            <div className="order-table-header">
+              <div className="col-order-id">Order ID</div>
+              <div className="col-route">Route</div>
+              <div className="col-service">Service</div>
+              <div className="col-status">Status</div>
+              <div className="col-date">Date</div>
+              <div className="col-actions">Actions</div>
+            </div>
+
+            <ul className="order-list">
+              {filteredOrders.map(order => {
+                const statusClass = order.status === 'delivered' ? 'delivered' : (order.status === 'in-transit' ? 'in-transit' : 'processing');
+                
+                return (
+                  <li key={order.id} className={statusClass}>
+                    <div className="col-order-id">
+                      <div className="order-id-main">{order.id}</div>
+                    </div>
+                    <div className="col-route">
+                      <span className="route-from">{order.origin}</span>
+                      <span className="route-arrow">→</span>
+                      <span className="route-to">{order.destination}</span>
+                    </div>
+                    <div className="col-service">
+                      <span className="service-name">{order.service || 'Standard'}</span>
+                    </div>
+                    <div className="col-status">
+                      <span className={`status-badge ${statusClass}`}>
+                        {statusClass === 'delivered' ? 'Delivered' : statusClass === 'in-transit' ? 'In Transit' : 'Active'}
+                      </span>
+                    </div>
+                    <div className="col-date">
+                      <span className="date-value">{order.date || new Date().toISOString().split('T')[0]}</span>
+                    </div>
+                    <div className="col-actions">
+                      <Link to={`/admin/tracking/${order.id}`} className="action-btn view-btn" title="View order details">
+                        <span className="eye-icon">👁</span>
+                      </Link>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
       )}
     </div>
   );

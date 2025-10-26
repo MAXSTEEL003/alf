@@ -125,7 +125,7 @@ input[type="button"],
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   border: none;
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-md);
   cursor: pointer;
   overflow: hidden;
   transition: all var(--transition-medium) ease;
@@ -173,9 +173,9 @@ input[type="button"]:active::before,
 button,
 input[type="submit"],
 input[type="button"] {
-  background: linear-gradient(135deg, var(--primary-color), #FF6B8A);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
   color: white;
-  box-shadow: 0 4px 16px rgba(0, 212, 170, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .btn:hover,
@@ -184,7 +184,7 @@ button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
   transform: translateY(-2px) translateZ(0);
-  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
+  box-shadow: var(--hover-shadow);
 }
 
 .btn:active,
@@ -193,7 +193,7 @@ button:active,
 input[type="submit"]:active,
 input[type="button"]:active {
   transform: translateY(0) translateZ(0);
-  box-shadow: 0 2px 8px rgba(0, 212, 170, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn:focus-visible,
@@ -238,18 +238,18 @@ input[type="button"]:disabled {
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 212, 170, 0.1);
+  background: rgba(30, 64, 175, 0.1);
 }
 
 .btn-ghost {
   background: transparent;
   color: var(--primary-color);
-  border: 1px solid rgba(0, 212, 170, 0.3);
+  border: 1px solid rgba(30, 64, 175, 0.3);
   box-shadow: none;
 }
 
 .btn-ghost:hover {
-  background: rgba(0, 212, 170, 0.05);
+  background: rgba(30, 64, 175, 0.05);
 }
 
 .btn-danger {
@@ -286,12 +286,12 @@ select,
 textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 212, 170, 0.2);
+  background: rgba(30, 64, 175, 0.05);
+  border: 1px solid rgba(30, 64, 175, 0.2);
   border-radius: var(--radius-default);
   color: var(--text-color);
   transition: all var(--transition-base) ease;
-  box-shadow: 0 0 0 0 rgba(0, 212, 170, 0);
+  box-shadow: 0 0 0 0 rgba(30, 64, 175, 0);
 }
 
 input[type="text"]:hover,
@@ -299,8 +299,8 @@ input[type="email"]:hover,
 input[type="password"]:hover,
 select:hover,
 textarea:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(0, 212, 170, 0.3);
+  background: rgba(30, 64, 175, 0.08);
+  border-color: rgba(30, 64, 175, 0.3);
 }
 
 input[type="text"]:focus,
@@ -352,19 +352,19 @@ label {
 */
 
 .card {
-  background: linear-gradient(180deg, rgba(30, 37, 56, 0.6), rgba(20, 25, 40, 0.4));
+  background: var(--card-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 212, 170, 0.1);
-  border-radius: var(--radius-default);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.08);
+  box-shadow: var(--card-shadow);
   transition: all var(--transition-medium) ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  border-color: rgba(0, 212, 170, 0.2);
-  box-shadow: 0 12px 36px rgba(0, 212, 170, 0.15);
+  border-color: var(--primary-ultra);
+  box-shadow: var(--hover-shadow);
 }
 
 /* ============================================
@@ -373,7 +373,7 @@ label {
 */
 
 .container {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
 }
@@ -426,6 +426,38 @@ label {
   input[type="submit"] {
     width: 100%;
   }
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.page-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top: 3px solid #3B82F6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  font-size: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ============================================

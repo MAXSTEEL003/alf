@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { collection, query, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, Timestamp, doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import '../styles/enquiry.css';
 
@@ -9,6 +9,7 @@ const Enquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // 'all', 'new', 'contacted'
+  const [updatingId, setUpdatingId] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -54,6 +55,24 @@ const Enquiry = () => {
     return enquiry.status === filter;
   });
 
+  const handleMarkAsContacted = async (enquiryId) => {
+    if (!user) return;
+    
+    try {
+      setUpdatingId(enquiryId);
+      const enquiryRef = doc(db, 'enquiries', enquiryId);
+      await updateDoc(enquiryRef, {
+        status: 'contacted',
+        contactedAt: new Date()
+      });
+    } catch (error) {
+      console.error('Error updating enquiry:', error);
+      alert('Failed to update enquiry status');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   return (
     <div className="enquiry-container">
       <h2>Customer Enquiries</h2>
@@ -92,8 +111,19 @@ const Enquiry = () => {
                   <h3>{enquiry.name}</h3>
                   <span className="timestamp">{formatDate(enquiry.timestamp)}</span>
                 </div>
-                <div className="status-badge" data-status={enquiry.status || 'new'}>
-                  {enquiry.status || 'new'}
+                <div className="header-actions">
+                  <div className="status-badge" data-status={enquiry.status || 'new'}>
+                    {enquiry.status || 'new'}
+                  </div>
+                  {(!enquiry.status || enquiry.status === 'new') && (
+                    <button 
+                      className="contacted-btn"
+                      onClick={() => handleMarkAsContacted(enquiry.id)}
+                      disabled={updatingId === enquiry.id}
+                    >
+                      {updatingId === enquiry.id ? 'Updating...' : 'Mark Contacted'}
+                    </button>
+                  )}
                 </div>
               </div>
               

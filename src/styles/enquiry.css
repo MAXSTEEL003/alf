@@ -44,7 +44,7 @@
 
 .filter-btn {
   padding: var(--space-md) var(--space-xl);
-  border: 2px solid var(--primary-color);
+  border: 2px solid #60A5FA;
   background: transparent;
   color: var(--text-color);
   border-radius: var(--radius-md);
@@ -68,7 +68,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #3B82F6, #1E40AF);
   transition: left var(--transition-medium);
   z-index: -1;
 }
@@ -78,14 +78,14 @@
 }
 
 .filter-btn:hover {
-  color: var(--text-on-dark);
+  color: white;
   transform: translateY(-2px) translateZ(0);
   box-shadow: var(--hover-shadow);
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-  color: var(--text-on-dark);
+  background: linear-gradient(135deg, #3B82F6, #1E40AF);
+  color: white;
   box-shadow: var(--hover-shadow);
   border-color: transparent;
 }
@@ -103,14 +103,11 @@
 
 .enquiry-card {
   background: var(--card-bg);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   box-shadow: var(--card-shadow);
   padding: var(--space-xl);
   transition: var(--transition);
-  border: 2px solid transparent;
-  background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
+  border: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
   animation: core-fade-in var(--motion-duration-medium) var(--ease-standard) forwards;
@@ -123,16 +120,16 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 0px;
-  height: 0%;
-  background: transparent;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary-color), var(--primary-light));
   transition: width 0.3s var(--ease-standard);
 }
 
 .enquiry-card:hover {
   transform: translateY(-4px) translateZ(0);
   box-shadow: var(--hover-shadow);
-  border-color: rgba(0, 212, 170, 0.2);
+  border-color: var(--primary-ultra);
 }
 
 .enquiry-card:hover::before {
@@ -145,32 +142,39 @@
   align-items: flex-start;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--border-color);
   gap: var(--space-md);
 }
 
 .header-main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   flex: 1;
 }
 
 .enquiry-header h3 {
   margin: 0;
   color: var(--text-color);
-  font-size: var(--font-size-xl);
+  font-size: 1.5rem;
   font-weight: var(--font-weight-bold);
 }
 
 .timestamp {
-  color: var(--text-light);
+  color: var(--text-muted);
   font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
 }
 
 .status-badge {
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
@@ -178,57 +182,89 @@
   transition: var(--transition);
   position: relative;
   white-space: nowrap;
-  border: 1px solid;
+  border: 2px solid;
 }
 
 .status-badge[data-status="new"] {
-  background: rgba(0, 212, 170, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--primary-color);
-  border-color: var(--primary-color);
-  animation: core-glow 3s ease-in-out infinite;
+  border-color: var(--primary-light);
 }
 
 .status-badge[data-status="contacted"] {
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(16, 185, 129, 0.1);
   color: var(--success-color);
   border-color: var(--success-color);
 }
 
+.contacted-btn {
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  color: var(--success-color);
+  border: 2px solid var(--success-color);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.contacted-btn:hover {
+  background: var(--success-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.contacted-btn:active {
+  transform: translateY(0);
+}
+
+.contacted-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--success-color);
+  color: white;
+}
+
 .enquiry-details {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .detail-row {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 1.5rem;
-  align-items: baseline;
-  padding: 1rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.02);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--card-bg-light);
   transition: all 0.3s var(--ease-standard);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-color);
   transform: translateZ(0);
 }
 
 .detail-row:hover {
-  background: rgba(0, 212, 170, 0.05);
-  border-color: rgba(0, 212, 170, 0.1);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: var(--primary-ultra);
   transform: translateX(4px) translateZ(0);
 }
 
 .label {
-  color: var(--text-light);
-  font-weight: 600;
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--letter-spacing-wide);
+  min-width: 100px;
+  flex-shrink: 0;
 }
 
 .value {
   color: var(--text-color);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
+  flex: 1;
 }
 
 .email-link, .phone-link {
@@ -261,34 +297,44 @@
 
 .service-tag {
   display: inline-block;
-  padding: 0.5rem 1.25rem;
-  background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(255, 51, 102, 0.05));
-  border-radius: 10px;
-  color: var(--text-color);
-  font-weight: 600;
+  padding: 0.4rem 1rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 64, 175, 0.05));
+  border-radius: var(--radius-full);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-semibold);
   transition: all 0.3s var(--ease-standard);
-  border: 1px solid rgba(0, 212, 170, 0.2);
+  border: 1px solid var(--primary-ultra);
   cursor: default;
+  font-size: var(--font-size-sm);
 }
 
 .service-tag:hover {
-  background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(255, 51, 102, 0.1));
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(30, 64, 175, 0.1));
   transform: translateY(-2px);
-  border-color: var(--primary-color);
+  border-color: var(--primary-light);
 }
 
 .remarks {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(255,255,255,0.02);
-  border-radius: 12px;
-  border-left: 3px solid var(--primary-color);
+  margin-top: 0.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--card-bg-light);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+}
+
+.remarks .label {
+  display: block;
+  margin-bottom: 0.5rem;
+  min-width: auto;
 }
 
 .remarks .value {
   margin-top: 0.5rem;
   line-height: 1.7;
-  color: var(--text-light);
+  color: var(--text-color);
+  font-weight: var(--font-weight-regular);
 }
 
 .loading {
@@ -331,8 +377,13 @@
   }
   
   .detail-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .label {
+    min-width: auto;
   }
   
   .enquiry-card {
@@ -341,6 +392,16 @@
   
   .enquiry-header {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .contacted-btn {
+    flex: 1;
+    text-align: center;
   }
 }

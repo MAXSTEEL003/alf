@@ -42,6 +42,9 @@ export default function AdminFeedback() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(null); // selected feedback item
+  const [searchQuery, setSearchQuery] = useState('');
+  const [helpfulCounts, setHelpfulCounts] = useState({});
+  const [markedHelpful, setMarkedHelpful] = useState({});
   const { analyze } = useSuggestions();
 
   useEffect(() => {
@@ -53,9 +56,33 @@ export default function AdminFeedback() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === 'all') return feedback;
-    return feedback.filter(f => String(f.rating) === filter);
-  }, [feedback, filter]);
+    let list = feedback || [];
+    if (filter !== 'all') list = list.filter(f => String(f.rating) === filter);
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (q) {
+      list = list.filter(f => (
+        String(f.orderId || '').toLowerCase().includes(q) ||
+        String(f.name || '').toLowerCase().includes(q) ||
+        String(f.comments || '').toLowerCase().includes(q)
+      ));
+    }
+    return list;
+  }, [feedback, filter, searchQuery]);
+
+  const stats = useMemo(() => {
+    const total = (feedback || []).length;
+    if (!total) return { total: 0, avg: 0, positive: 0, dist: [0,0,0,0,0] };
+    const dist = [0,0,0,0,0];
+    let sum = 0;
+    feedback.forEach(f => {
+      const r = Math.min(5, Math.max(1, Number(f.rating || 0)));
+      if (r >= 1 && r <= 5) dist[r-1]++;
+      sum += Number(f.rating || 0);
+    });
+    const avg = +(sum / total).toFixed(2);
+    const positive = Math.round(((dist[4] + dist[3]) / total) * 100);
+    return { total, avg, positive, dist };
+  }, [feedback]);
 
   const handleGenerate = async () => {
     const id = orderIdInput.trim();
@@ -92,6 +119,26 @@ export default function AdminFeedback() {
     } catch (_) {}
   };
 
+  // Local helpful-count UI (optimistic, no server call here)
+  useEffect(() => {
+    // Initialize counts from feedback items when feed changes
+    const init = {};
+    (feedback || []).forEach(f => { init[f.id] = Number(f.helpful || 0) || 0; });
+    setHelpfulCounts(init);
+    setMarkedHelpful({});
+  }, [feedback]);
+
+  const handleMarkHelpful = (id) => {
+    if (!id) return;
+    setMarkedHelpful(prev => {
+      if (prev[id]) return prev; // already marked
+      const next = { ...prev, [id]: true };
+      return next;
+    });
+    setHelpfulCounts(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    // TODO: wire to Firestore to persist helpful counts if desired
+  };
+
   return (
     <div className="admin-feedback-page">
       <div className="page-header">
@@ -99,38 +146,53 @@ export default function AdminFeedback() {
         <p className="subtext">Generate secure feedback links and review customer feedback in one place.</p>
       </div>
 
-      <div className="grid two-cols">
-        <section className="card glass generate-link">
-          <h3>Generate Feedback Link</h3>
-          <p className="muted">Enter an Order ID to create a unique, tokenized feedback link you can share with the customer.</p>
+      <div className="metrics-row">
+        <div className="stat-card">
+          <h4>Average rating</h4>
+          <div className="value">{stats.avg} / 5</div>
+          <div className="muted">Based on {stats.total} reviews</div>
+        </div>
 
-          <div className="form-inline">
-            <input
-              value={orderIdInput}
-              onChange={(e) => setOrderIdInput(e.target.value)}
-              placeholder="Enter Order ID (e.g., 12345 or Firestore doc id)"
-            />
-            <button className="btn" onClick={handleGenerate} disabled={generating}>
-              {generating ? 'Generating…' : 'Generate Link'}
-            </button>
-          </div>
+        <div className="stat-card">
+          <h4>Total reviews</h4>
+          <div className="value">{stats.total}</div>
+          <div className="muted">All time</div>
+        </div>
 
-          {generated && (
-            <div className="generated-link">
-              <div className="url" title={generated.url}>{generated.url}</div>
-              <div className="actions">
-                <button className="btn secondary" onClick={copyLink}>{generated.copied ? 'Copied' : 'Copy'}</button>
-                <a className="btn" href={generated.url} target="_blank" rel="noreferrer">Open</a>
+        <div className="stat-card">
+          <h4>Positive rate</h4>
+          <div className="value">{stats.positive}%</div>
+          <div className="muted">% of 4★ & 5★ reviews</div>
+        </div>
+
+        <div className="rating-distribution">
+          <h4>Rating distribution</h4>
+          {stats.dist.slice().reverse().map((count, idx) => {
+            const rating = 5 - idx;
+            const pct = stats.total ? Math.round((count / stats.total) * 100) : 0;
+            return (
+              <div className="row" key={rating}>
+                <div className="label">{rating}★</div>
+                <div className="bar-wrap" aria-hidden>
+                  <div className="bar" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="count">{count}</div>
               </div>
-            </div>
-          )}
-        </section>
+            );
+          })}
+        </div>
+      </div>
 
-        <section className="card glass feedback-list">
+      <section className="card glass feedback-list full-width">
           <div className="list-header">
-            <h3>Received Feedback</h3>
+            <div>
+              <h3>Received Feedback</h3>
+              <p className="muted">Click an item to view details and suggested actions.</p>
+            </div>
+
             <div className="filters">
-              <label>Filter by rating:</label>
+              <input className="search" placeholder="Search by order, name or comment" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <label>Filter:</label>
               <select value={filter} onChange={(e) => setFilter(e.target.value)}>
                 <option value="all">All</option>
                 <option value="5">5</option>
@@ -147,20 +209,67 @@ export default function AdminFeedback() {
           ) : (
             <ul className="items">
               {filtered.map(item => (
-                <li key={item.id} className="item" onClick={() => setSelected(item)}>
-                  <div className="meta">
-                    <span className={`badge rating r${item.rating}`}>{item.rating}★</span>
-                    <span className="order">Order: {item.orderId}</span>
-                    <span className="name">By {item.name || 'Anonymous'}</span>
-                    <span className="date">{new Date(item.createdAt || Date.now()).toLocaleString()}</span>
+                <li key={item.id} className="review-card" onClick={() => setSelected(item)}>
+                  <div className="review-header">
+                    <div className="left">
+                      <div className={`badge rating r${item.rating}`}>{item.rating}★</div>
+                    </div>
+                    <div className="main">
+                      <div className="title">{item.name || 'Anonymous'}</div>
+                      <div className="meta-line">Order: {item.orderId} • {new Date(item.createdAt || Date.now()).toLocaleDateString()}</div>
+                    </div>
+                    <div className="right">
+                      <div className="rating-row">
+                        <div className="stars">{Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i} className={i < (item.rating || 0) ? 'star on' : 'star'}>★</span>
+                        ))}</div>
+                        <div className="rating-num">{(item.rating || 0).toFixed ? (Number(item.rating).toFixed(1)) : item.rating}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="preview">{(item.comments || '').slice(0, 120) || '—'}</div>
+
+                  <div className="review-body">
+                    <p>{item.comments || '—'}</p>
+                  </div>
+
+                  <div className="review-footer">
+                    <div className="route muted">{item.route || ''}</div>
+                    <div className="actions">
+                      <div className="helpful-count">{helpfulCounts[item.id] || 0} people found this helpful</div>
+                      <button className="btn small secondary" onClick={(e) => { e.stopPropagation(); handleMarkHelpful(item.id); }} disabled={!!markedHelpful[item.id]}>Mark as Helpful</button>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </section>
-      </div>
+
+      <section className="card glass generate-link full-width">
+        <h3>Generate Feedback Link</h3>
+        <p className="muted">Enter an Order ID to create a unique, tokenized feedback link you can share with the customer.</p>
+
+        <div className="form-inline">
+          <input
+            value={orderIdInput}
+            onChange={(e) => setOrderIdInput(e.target.value)}
+            placeholder="Enter Order ID (e.g., 12345 or Firestore doc id)"
+          />
+          <button className="btn" onClick={handleGenerate} disabled={generating}>
+            {generating ? 'Generating…' : 'Generate Link'}
+          </button>
+        </div>
+
+        {generated && (
+          <div className="generated-link">
+            <div className="url" title={generated.url}>{generated.url}</div>
+            <div className="actions">
+              <button className="btn secondary" onClick={copyLink}>{generated.copied ? 'Copied' : 'Copy'}</button>
+              <a className="btn" href={generated.url} target="_blank" rel="noreferrer">Open</a>
+            </div>
+          </div>
+        )}
+      </section>
 
       {selected && (
         <div className="drawer" role="dialog" aria-modal="true">

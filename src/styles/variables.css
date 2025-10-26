@@ -7,17 +7,17 @@
 
 :root {
   /* === COLOR PALETTE === */
-  /* Primary gradient (Teal → Cyan) */
-  --primary-color: #00D4AA;
-  --primary: #00D4AA;
-  --primary-dark: #00A885;
-  --primary-light: #40FFD4;
-  --primary-ultra: #7FFFDB;
+  /* Primary (Blue) */
+  --primary-color: #1E40AF;
+  --primary: #1E40AF;
+  --primary-dark: #1e3a8a;
+  --primary-light: #3B82F6;
+  --primary-ultra: #60A5FA;
 
-  /* Accent (Vibrant Red/Pink) */
-  --accent-color: #FF3366;
-  --accent: #FF3366;
-  --accent-dark: #E62852;
+  /* Accent (Darker Blue) */
+  --accent-color: #0F172A;
+  --accent: #0F172A;
+  --accent-dark: #0C1222;
 
   /* Status colors */
   --success-color: #10b981;
@@ -28,42 +28,42 @@
   --info-color: #3b82f6;
 
   /* Background gradient stops */
-  --gradient-start: #00D4AA;
-  --gradient-mid: #4A90E2;
-  --gradient-end: #FF3366;
+  --gradient-start: #FFFFFF;
+  --gradient-mid: #3B82F6;
+  --gradient-end: #1E40AF;
 
   /* === BACKGROUND PALETTE === */
-  --background: #151B2B;
-  --background-alt: #0F1219;
-  --dark-bg: #111827;
-  --darker-bg: #0B0F1A;
-  --card-bg: #1E2538;
-  --card-bg-light: #242E43;
+  --background: #FFFFFF;
+  --background-alt: #F8FAFC;
+  --dark-bg: #F1F5F9;
+  --darker-bg: #E2E8F0;
+  --card-bg: #FFFFFF;
+  --card-bg-light: #F8FAFC;
 
   /* === TEXT PALETTE === */
-  --text-color: #F0F4FF;
-  --text-light: #94A3B8;
-  --text-lighter: #64748B;
-  --text-on-dark: #FFFFFF;
-  --text-muted: #475569;
+  --text-color: #1E293B;
+  --text-light: #64748B;
+  --text-lighter: #94A3B8;
+  --text-on-dark: #0F172A;
+  --text-muted: #94A3B8;
 
   /* === SEMANTIC COLORS === */
-  --border-color: #3A3F55;
-  --border-subtle: #2D3748;
-  --divider: rgba(255, 255, 255, 0.05);
+  --border-color: #E2E8F0;
+  --border-subtle: #CBD5E1;
+  --divider: rgba(30, 41, 59, 0.05);
 
   /* === SHADOW SYSTEM === */
   --shadow-xs: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 4px 12px rgba(0, 212, 170, 0.08);
-  --shadow-md: 0 8px 24px rgba(0, 212, 170, 0.12);
-  --shadow-lg: 0 12px 36px rgba(0, 212, 170, 0.18);
-  --shadow-xl: 0 20px 48px rgba(0, 212, 170, 0.25);
-  --shadow: 0 8px 32px rgba(0, 212, 170, 0.15);
-  --shadow-sm: 0 4px 12px rgba(0, 212, 170, 0.1);
-  --card-shadow: 0 12px 36px rgba(0, 212, 170, 0.2), 0 0 0 1px rgba(0, 212, 170, 0.1);
-  --hover-shadow: 0 20px 48px rgba(0, 212, 170, 0.3), 0 0 0 2px rgba(0, 212, 170, 0.2);
-  --inset-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
-  --focus-shadow: 0 0 0 4px rgba(0, 212, 170, 0.1), 0 0 0 2px var(--primary-color);
+  --shadow-sm: 0 4px 12px rgba(30, 64, 175, 0.08);
+  --shadow-md: 0 8px 24px rgba(30, 64, 175, 0.12);
+  --shadow-lg: 0 12px 36px rgba(30, 64, 175, 0.18);
+  --shadow-xl: 0 20px 48px rgba(30, 64, 175, 0.25);
+  --shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
+  --shadow-sm: 0 4px 12px rgba(30, 64, 175, 0.1);
+  --card-shadow: 0 4px 20px rgba(30, 64, 175, 0.08);
+  --hover-shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
+  --inset-shadow: inset 0 1px 2px rgba(30, 64, 175, 0.05);
+  --focus-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1), 0 0 0 2px var(--primary-color);
 
   /* === SPACING SCALE === */
   /* Follows 8px base unit for consistency */
