@@ -1,12 +1,52 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/about.css';
+// About hero background image (user provided). Place the image file at src/assets/about-hero-bg.jpg
+import aboutHeroBg from '../assets/about-hero-bg.jpg';
 
 export default function About() {
+  const features = [
+    {
+      icon: 'fas fa-shipping-fast',
+      title: 'Lightning Fast Delivery',
+      description: 'Same-day and next-day delivery options available across major cities.',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    },
+    {
+      icon: 'fas fa-shield-alt',
+      title: 'Secure & Insured',
+      description: 'Full insurance coverage and secure handling for all your shipments.',
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+      icon: 'fas fa-mobile-alt',
+      title: 'Smart Tracking',
+      description: 'AI-powered real-time tracking with predictive delivery estimates.',
+      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    },
+    {
+      icon: 'fas fa-rupee-sign',
+      title: 'Competitive Pricing',
+      description: 'Best rates in the market with transparent pricing - no hidden costs.',
+      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+    },
+    {
+      icon: 'fas fa-leaf',
+      title: 'Eco-Friendly Options',
+      description: 'Carbon-neutral delivery choices and sustainable packaging solutions.',
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    },
+    {
+      icon: 'fas fa-headset',
+      title: '24/7 Support',
+      description: 'Round-the-clock customer service to assist with all your logistics needs.',
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    }
+  ];
   return (
     <div className="about-page">
       {/* Hero Section */}
-      <section className="about-hero">
+  <section className="about-hero" style={{ '--about-hero-img': `url(${aboutHeroBg})` }}>
         <div className="about-container">
           <div className="hero-content">
             <h1 className="hero-title">About ALF Logistics</h1>
@@ -55,53 +95,15 @@ export default function About() {
         <div className="about-container">
           <h2 className="section-title">Why Choose ALF Logistics?</h2>
           <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-shipping-fast"></i>
+            {features.map((feature, index) => (
+              <div key={index} className="feature-card" style={{ '--gradient': feature.gradient }}>
+                <div className="feature-icon">
+                  <i className={feature.icon}></i>
+                </div>
+                <h4>{feature.title}</h4>
+                <p>{feature.description}</p>
               </div>
-              <h4>99.8% Reliability Rate</h4>
-              <p>Industry-leading on-time delivery and package safety. Your shipments are our priority, backed by real-time monitoring and proactive communication.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-mobile-alt"></i>
-              </div>
-              <h4>Real-time Tracking</h4>
-              <p>Advanced GPS and IoT technology gives you complete visibility. Track your shipments at any moment with detailed location updates and estimated delivery times.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-globe"></i>
-              </div>
-              <h4>Global Coverage</h4>
-              <p>Delivery to 200+ countries and territories worldwide. Our extensive network of partners ensures efficient routing and faster delivery times, no matter the destination.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-lock"></i>
-              </div>
-              <h4>Secure & Insured</h4>
-              <p>Comprehensive insurance coverage and advanced security protocols. Every package is protected with end-to-end encryption and real-time security monitoring.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-cogs"></i>
-              </div>
-              <h4>Scalable Solutions</h4>
-              <p>From startups to enterprises. Our flexible infrastructure grows with your business, offering custom solutions tailored to your specific logistics needs.</p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">
-                <i className="fas fa-headset"></i>
-              </div>
-              <h4>24/7 Support</h4>
-              <p>Dedicated customer service team available round the clock. Multi-channel support via chat, email, and phone ensures your questions are answered instantly.</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -238,7 +240,7 @@ export default function About() {
               <p className="contact-label">San Francisco, CA 94105</p>
             </div>
 
-            <div className="contact-card" style={{ gridColumn: '1 / -1', maxWidth: '400px', margin: '0 auto', width: '100%' }}>
+            <div className="contact-card follow-card">
               <div className="contact-icon">
                 <i className="fas fa-share-alt"></i>
               </div>

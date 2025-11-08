@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
@@ -53,6 +53,9 @@ if (typeof window !== 'undefined') {
 // Mark the app as initialized so the inline fallback in index.html doesn't show
 if (typeof window !== 'undefined') {
   window.__appInitialized = true
+  // Remove fallback banner if it was shown
+  const fb = document.getElementById('app-fallback-banner')
+  if (fb) try { fb.remove() } catch (_) {}
 }
 
 createRoot(document.getElementById('root')).render(
@@ -62,3 +65,16 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 )
+
+// After first paint, mark the document to enable animations (improves LCP)
+if (typeof window !== 'undefined') {
+  const enableAnimations = () => {
+    document.body.classList.add('app-animated');
+  };
+  if (document.readyState === 'complete') {
+    // Give the browser a tick to render LCP elements
+    setTimeout(enableAnimations, 150);
+  } else {
+    window.addEventListener('load', () => setTimeout(enableAnimations, 150));
+  }
+}

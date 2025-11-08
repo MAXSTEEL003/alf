@@ -20,15 +20,13 @@ const HomeEnhanced = () => {
   const services = [
     'Express Delivery',
     'Ground Transportation', 
-    'Air Freight',
-    'Ocean Freight',
     'Warehousing',
     'Supply Chain Solutions'
   ];
 
   const stats = [
     { number: '500+', label: 'Cities Connected', icon: 'fas fa-map-marked-alt' },
-    { number: '50K+', label: 'Daily Deliveries', icon: 'fas fa-shipping-fast' },
+    { number: '50K+', label: 'Total Deliveries', icon: 'fas fa-shipping-fast' }, // Renamed from Daily Deliveries
     { number: '98%', label: 'On-Time Delivery', icon: 'fas fa-clock' },
     { number: '24/7', label: 'Customer Support', icon: 'fas fa-headset' }
   ];
@@ -276,8 +274,6 @@ const HomeEnhanced = () => {
             {[
               { icon: 'fas fa-bolt', title: 'Express Delivery', desc: 'Same-day & next-day delivery' },
               { icon: 'fas fa-truck', title: 'Ground Transport', desc: 'Cost-effective surface shipping' },
-              { icon: 'fas fa-plane', title: 'Air Freight', desc: 'Fast international shipping' },
-              { icon: 'fas fa-ship', title: 'Ocean Freight', desc: 'Heavy cargo solutions' },
               { icon: 'fas fa-warehouse', title: 'Warehousing', desc: 'Secure storage facilities' },
               { icon: 'fas fa-cogs', title: 'Supply Chain', desc: 'End-to-end management' }
             ].map((service, index) => (

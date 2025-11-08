@@ -38,6 +38,24 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  /* Enhance visual brightness & color without washing out details */
+  filter: brightness(1.15) contrast(1.06) saturate(1.08);
+  transition: filter 0.6s ease;
+}
+
+/* Slight interactive boost on active slide for subtle emphasis */
+.slide.active img {
+  filter: brightness(1.2) contrast(1.07) saturate(1.1);
+}
+
+/* Mobile tuning: Reduce brightness a touch to prevent overexposure on small screens */
+@media (max-width: 480px) {
+  .slide img {
+    filter: brightness(1.1) contrast(1.05) saturate(1.06);
+  }
+  .slide.active img {
+    filter: brightness(1.15) contrast(1.06) saturate(1.08);
+  }
 }
 
 .slide.active {

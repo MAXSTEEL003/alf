@@ -707,12 +707,14 @@
   .order-list li {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(96, 165, 250, 0.2);
-    border-radius: 12px;
-    background: rgba(59, 130, 246, 0.02);
+    gap: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 2px solid rgba(96, 165, 250, 0.3);
+    border-radius: 16px;
+    background: rgba(59, 130, 246, 0.05);
+    width: 100%;
+    min-width: 280px;
   }
 
   .order-list li:last-child {
@@ -729,6 +731,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0.5rem 0;
+    min-height: 2.5rem;
   }
 
   .col-order-id::before { content: 'Order ID'; }
@@ -771,7 +775,15 @@
   }
 
   .order-detail-card {
-    padding: 1.5rem;
+    padding: 1.75rem;
+    margin: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+  
+  .order-list li {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    gap: 0.875rem;
   }
 
   .order-info-grid {

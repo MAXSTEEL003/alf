@@ -1,7 +1,7 @@
 /* Login Page Styles - Consistent with Website Theme */
 
 .login-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 120px); /* Account for navbar */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +11,6 @@
   position: relative;
   animation: core-fade-in var(--motion-duration-medium) var(--ease-standard) forwards;
   width: 100%;
-  height: 100%;
 }
 
 .login-page::before {
@@ -244,12 +243,11 @@
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
   border-radius: 0 !important;
   width: 100% !important;
-  height: 100% !important;
   max-width: none !important;
+  padding: 0 1rem !important; /* Keep some padding for mobile */
+  margin: 0 auto !important;
 }
 
 .form .btn {
@@ -367,6 +365,18 @@
   border: 1px solid var(--danger-color);
 }
 
+.alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+  border: 1px solid var(--warning-color);
+  border-left: 4px solid var(--warning-color);
+}
+
+.alert-warning strong,
+.alert-danger strong {
+  font-weight: var(--font-weight-bold);
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -377,6 +387,7 @@
 @media (max-width: 768px) {
   .login-page {
     padding: clamp(1rem, 3vw, 1.5rem);
+    min-height: calc(100vh - 140px); /* Account for mobile navbar */
   }
 
   .login-card {
@@ -411,6 +422,7 @@
 @media (max-width: 480px) {
   .login-page {
     padding: 1rem 0.75rem;
+    min-height: calc(100vh - 130px); /* Account for mobile navbar */
   }
 
   .login-card {

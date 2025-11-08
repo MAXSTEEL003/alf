@@ -2,7 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, NavLink, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 const About = lazy(() => import('./pages/About'))
-const Home = lazy(() => import('./pages/Home-Enhanced'))
+// Load Home statically to avoid dynamic import fetch issues during dev
+import Home from './pages/Home-Enhanced.jsx'
 const Login = lazy(() => import('./pages/Login'))
 const CreateOrder = lazy(() => import('./pages/CreateOrder'))
 const ShareView = lazy(() => import('./pages/ShareView'))
@@ -30,25 +31,26 @@ function AdminHeader() {
         </div>
         <nav className="main-nav">
           <NavLink 
-            to="create" 
+            to="/admin/create" 
             className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Create Order
           </NavLink>
           <NavLink 
-            to="tracking" 
+            to="/admin/tracking" 
             className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Order Tracking
           </NavLink>
+          {/* On mobile we move these into a dropdown */}
           <NavLink 
-            to="enquiry" 
+            to="/admin/enquiry" 
             className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Enquiries
           </NavLink>
           <NavLink 
-            to="feedback" 
+            to="/admin/feedback" 
             className={({isActive}) => isActive ? "nav-link active white-text hover-lift" : "nav-link white-text hover-lift"}
           >
             Feedback

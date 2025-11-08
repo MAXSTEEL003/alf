@@ -27,7 +27,7 @@ const Home = () => {
 
   const stats = [
     { number: '500+', label: 'Cities Connected', icon: 'fas fa-map-marked-alt' },
-    { number: '50K+', label: 'Daily Deliveries', icon: 'fas fa-shipping-fast' },
+    { number: '50K+', label: 'Total Deliveries', icon: 'fas fa-shipping-fast' },
     { number: '98%', label: 'On-Time Delivery', icon: 'fas fa-stopwatch' },
     { number: '24/7', label: 'Customer Support', icon: 'fas fa-phone' }
   ];

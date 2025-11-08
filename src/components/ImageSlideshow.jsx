@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/slideshow.css';
+// Local images from src/assets (bundled by Vite)
+import imgHero from '../assets/ChatGPT Image Nov 8, 2025, 11_46_27 AM.jpg';
+import imgGround from '../assets/ground.jpg';
+import imgGround2 from '../assets/groundlogistic1.jpg';
+import imgFullhub from '../assets/fullhub-logistics-ground-transport-scaled-800x400.jpeg';
 
 const ImageSlideshow = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Logistics-related images
+  // Logistics-related images (local assets)
   const slides = [
-    {
-      url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Logistics Truck Delivery'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1585519048919-c3400ca199e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Cargo Shipping'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Warehouse Operations'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1578575437980-4a82f8edd492?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Package Delivery'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1635147063614-43150dbe10da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Logistics Network'
-    }
+    { url: imgHero, alt: 'Logistics Hero' }, // Requested hero image
+    { url: imgGround, alt: 'Ground Transport' },
+    { url: imgGround2, alt: 'Logistics Operations' },
+    { url: imgFullhub, alt: 'Transport Fleet' }
   ];
 
   useEffect(() => {

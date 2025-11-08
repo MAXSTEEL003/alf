@@ -12,36 +12,41 @@
 
 .about-hero {
   position: relative;
-  min-height: 55vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.5rem;
-  overflow: hidden;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  background: 
-    linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.98) 0%, 
-      rgba(248, 250, 252, 0.95) 25%, 
-      rgba(241, 245, 249, 0.92) 50%, 
-      rgba(248, 250, 252, 0.95) 75%, 
-      rgba(255, 255, 255, 0.98) 100%),
-    linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(30, 40, 175, 0.05) 100%);
+  /* Single-layer image: fill the area with cover (no tint, no gradient), centered */
+  background: var(--about-hero-img) center / cover no-repeat;
+  background-color: var(--background, #ffffff);
+  background-attachment: scroll;
   z-index: 1;
 }
 
-.about-hero::before {
+/* Soft edge blending to match page background without altering the image colors */
+.about-hero::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(96, 165, 250, 0.08) 0%, transparent 50%);
+  inset: 0;
+  background:
+    /* left/right fade */
+    linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.95) 100%),
+    /* top/bottom fade */
+    linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 15%, rgba(255,255,255,0) 85%, rgba(255,255,255,0.9) 100%);
+  pointer-events: none;
   z-index: 0;
 }
+
+/* Removed texture overlay to keep the image clean */
+/* (intentionally empty — pattern layer removed) */
+
+
+/* Adjust spacing so text sits below centered logo area (image has whitespace) */
+.about-hero .hero-content {
+  display: none !important; /* hide text over the hero image */
+}
+
+/* Hero text brand palette (deep navy & complementary blue) */
 
 .about-hero .about-container {
   max-width: 1200px;
@@ -62,24 +67,26 @@
 .hero-title {
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 900;
-  color: #1E293B;
+  color: #0F2F45;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(15,47,69,0.08);
 }
 
 .hero-subtitle {
   font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: var(--primary-light);
+  color: #1E4F78; /* complementary blue */
   font-weight: 600;
   margin-bottom: 1.5rem;
   letter-spacing: 0.5px;
   line-height: 1.8;
+  text-shadow: 0 1px 2px rgba(15,47,69,0.06);
 }
 
 .hero-description {
   font-size: clamp(1rem, 2vw, 1.125rem);
-  color: var(--text-light);
+  color: #3E5462;
   line-height: 1.8;
   max-width: 700px;
   margin: 0 auto 2rem;
@@ -403,6 +410,20 @@
   gap: 2rem;
 }
 
+/* Ensure consistent desktop layout: 4 columns when space allows */
+@media (min-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.contact-card {
+  height: 100%;
+}
+
+/* Follow card inherits normal grid behavior (no spanning) */
+.follow-card { justify-content: center; }
+
 .contact-card {
   padding: 2.5rem;
   background: var(--card-bg);
@@ -467,21 +488,478 @@
   }
 }
 
+/* Enhanced Responsive Design */
+@media (max-width: 1024px) {
+  .about-container {
+    padding: 0 clamp(1rem, 3vw, 1.5rem);
+  }
+  
+  .hero-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .mission-card, .vision-card, .values-card {
+    padding: 2rem;
+  }
+  
+  .features-grid .feature-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .service-item {
+    padding: 2rem;
+  }
+  
+  .stat-card {
+    padding: 2.5rem 2rem;
+    min-height: 280px;
+  }
+  
+  .contact-card {
+    padding: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .about-hero {
+    min-height: 45vh;
+    padding: 0.5rem 1rem 1.5rem 1rem; /* Reduced top padding */
+  }
+  
+  .hero-content {
+    padding: 1.5rem 0.5rem;
+    max-width: none;
+  }
+  
+  .hero-title {
+    font-size: clamp(2rem, 7vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    margin-bottom: 1rem;
+  }
+  
+  .hero-description {
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-accent {
+    width: 60px;
+    height: 3px;
+    margin: 1.5rem auto 0;
+  }
+  
+  .mission-vision {
+    padding: clamp(3rem, 8vw, 4rem) 0;
+  }
+  
+  .mission-vision-grid {
+    gap: 2rem;
+  }
+  
+  .values-card {
+    max-width: 100%;
+  }
+  
+  .why-choose,
+  .services-section {
+    padding: clamp(3rem, 8vw, 4rem) 0;
+  }
+  
+  .section-title {
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
+    margin-bottom: 2rem;
+  }
+  
+  .section-title::after {
+    width: 60px;
+    height: 3px;
+    bottom: -0.75rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .features-grid .feature-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .feature-icon {
+    font-size: 3rem;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 1.25rem;
+  }
+  
+  .features-grid .feature-card h4 {
+    font-size: 1.15rem;
+  }
+  
+  .features-grid .feature-card p {
+    font-size: 0.9rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .service-item {
+    padding: 2rem 1.5rem;
+  }
+  
+  .service-number {
+    font-size: 2.2rem;
+  }
+  
+  .service-item h4 {
+    font-size: 1.2rem;
+  }
+  
+  .stats-section {
+    padding: clamp(3rem, 8vw, 4rem) clamp(1rem, 3vw, 1.5rem);
+    margin: clamp(2rem, 4vw, 3rem) auto;
+    border-radius: 20px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .stat-card {
+    padding: 2rem 1.5rem;
+    min-height: 240px;
+    border-radius: 20px;
+  }
+  
+  .stat-value {
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  .stat-card p {
+    font-size: 1rem;
+  }
+  
+  .cta-section {
+    padding: clamp(2.5rem, 6vw, 3.5rem) 0;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  
+  .cta-content {
+    padding: clamp(2.5rem, 6vw, 3.5rem);
+    border-radius: 20px;
+  }
+  
+  .cta-content h2 {
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
+    margin-bottom: 1rem;
+  }
+  
+  .cta-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
   .cta-buttons {
     flex-direction: column;
+    gap: 1rem;
   }
 
   .cta-buttons .btn {
     width: 100%;
     justify-content: center;
+    padding: 1.125rem 2rem;
   }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  
+  .contact-section {
+    padding: clamp(3rem, 8vw, 4rem) 0;
   }
-
-  .mission-vision-grid, .features-grid, .services-grid, .contact-grid {
+  
+  .contact-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .contact-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .contact-icon {
+    font-size: 2.2rem;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.25rem;
+  }
+  
+  .mission-vision-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .mission-card, .vision-card, .values-card {
+    padding: 1.75rem;
+    border-radius: 16px;
+  }
+  
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .mission-card h3, .vision-card h3, .values-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  .stat-card {
+    min-height: 200px;
+    padding: 1.75rem 1.25rem;
+  }
+  
+  .cta-buttons .btn {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-container {
+    padding: 0 0.75rem;
+  }
+  
+  .about-hero {
+    min-height: 40vh;
+    padding: 0.25rem 0.5rem 1rem 0.5rem; /* Minimal top padding */
+  }
+  
+  .hero-content {
+    padding: 1rem 0.25rem;
+  }
+  
+  .hero-title {
+    font-size: clamp(1.8rem, 8vw, 2.2rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .hero-accent {
+    width: 50px;
+    height: 3px;
+  }
+  
+  .mission-vision,
+  .why-choose,
+  .services-section,
+  .contact-section {
+    padding: clamp(2.5rem, 6vw, 3rem) 0;
+  }
+  
+  .section-title {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-title::after {
+    width: 50px;
+    height: 2px;
+  }
+  
+  .mission-card, .vision-card, .values-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .card-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .mission-card h3, .vision-card h3, .values-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .features-grid .feature-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+  
+  .features-grid .feature-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .features-grid .feature-card p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  
+  .service-item {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .service-number {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .service-item h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .service-item p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .stats-section {
+    padding: clamp(2.5rem, 6vw, 3rem) 1rem;
+    margin: 2rem auto;
+    border-radius: 16px;
+  }
+  
+  .stat-card {
+    padding: 1.5rem 1rem;
+    min-height: 180px;
+    border-radius: 16px;
+  }
+  
+  .stat-value {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-card p {
+    font-size: 0.9rem;
+  }
+  
+  .cta-content {
+    padding: clamp(2rem, 5vw, 2.5rem);
+    border-radius: 16px;
+  }
+  
+  .cta-content h2 {
+    font-size: clamp(1.6rem, 7vw, 2rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  .cta-content p {
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .cta-buttons .btn {
+    padding: 0.95rem 1.25rem;
+    font-size: 0.9rem;
+    border-radius: 25px;
+  }
+  
+  .contact-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .contact-icon {
+    font-size: 2rem;
+    width: 55px;
+    height: 55px;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .contact-card p {
+    font-size: 0.9rem;
+  }
+  
+  .contact-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .about-container {
+    padding: 0 0.5rem;
+  }
+  
+  .hero-content {
+    padding: 0.75rem 0;
+  }
+  
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .hero-description {
+    font-size: 0.85rem;
+  }
+  
+  .mission-card, .vision-card, .values-card {
+    padding: 1.25rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .features-grid .feature-card {
+    padding: 1.25rem;
+  }
+  
+  .service-item {
+    padding: 1.25rem;
+  }
+  
+  .stat-card {
+    padding: 1.25rem 0.75rem;
+    min-height: 160px;
+  }
+  
+  .cta-content {
+    padding: 1.75rem;
+  }
+  
+  .contact-card {
+    padding: 1.25rem;
   }
 }

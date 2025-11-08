@@ -432,7 +432,26 @@ textarea:focus-visible {
    ============================================
 */
 
+/* Mobile responsive utilities */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: 0 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
   .animate-fade-in,
   .animate-slide-in-left,
   .animate-slide-in-right,
@@ -442,8 +461,134 @@ textarea:focus-visible {
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+  
   .animate-bounce-in {
     animation: core-scale-in var(--motion-duration-fast) var(--ease-standard) both;
+  }
+}
+
+/* Mobile navigation helpers */
+.mobile-menu-trigger {
+  display: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base) ease;
+}
+
+.mobile-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-trigger {
+    display: block;
+  }
+  
+  .mobile-nav-hidden {
+    display: none;
+  }
+  
+  .mobile-nav-visible {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    padding: var(--space-md);
+    gap: var(--space-sm);
+    z-index: var(--z-dropdown);
+  }
+}
+
+/* ============================================
+   MOBILE UX ENHANCEMENTS
+   ============================================ */
+
+/* Improve touch targets on mobile (minimum 44x44px) */
+@media (max-width: 768px) {
+  button,
+  .btn,
+  a[role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1.25rem;
+  }
+  
+  /* Better spacing for forms */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+  
+  /* Larger tap targets for links */
+  a {
+    padding: 0.25rem 0;
+  }
+  
+  /* Better readability */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Prevent horizontal scroll */
+  body,
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  /* Increase spacing for better touch */
+  .btn + .btn {
+    margin-top: 0.75rem;
+  }
+  
+  /* Stack buttons vertically */
+  .button-group,
+  .form-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .button-group > *,
+  .form-actions > * {
+    width: 100%;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  /* Reduce padding to maximize content area */
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  /* Ensure buttons are still large enough */
+  button,
+  .btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
   }
 }
 

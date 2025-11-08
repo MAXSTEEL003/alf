@@ -1,0 +1,81 @@
+<!-- Example HTML structure for mobile navbar with dropdown -->
+<!-- Add this to your navbar component -->
+
+<header class="header">
+  <div class="header-container">
+    <div class="logo">
+      <h1>ALF Logistics</h1>
+    </div>
+    
+    <nav class="main-nav">
+      <a href="/admin/create" class="nav-link">Create Order</a>
+      <a href="/admin/tracking" class="nav-link active">Order Tracking</a>
+      <a href="/admin/enquiry" class="nav-link">Enquiries</a>
+      <a href="/admin/feedback" class="nav-link">Feedback</a>
+      <button class="nav-link logout-btn">Logout</button>
+      
+      <!-- Mobile Dropdown Menu (shows Feedback and Logout on small screens) -->
+      <div class="mobile-dropdown">
+        <button class="dropdown-toggle" id="mobileDropdownToggle">
+          More
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-menu" id="mobileDropdownMenu">
+          <a href="/admin/feedback" class="dropdown-item">Feedback</a>
+          <a href="/logout" class="dropdown-item logout-action">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+// JavaScript for mobile dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdownToggle = document.getElementById('mobileDropdownToggle');
+  const dropdownMenu = document.getElementById('mobileDropdownMenu');
+  
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Toggle dropdown
+      const isOpen = dropdownMenu.classList.contains('show');
+      
+      if (isOpen) {
+        dropdownMenu.classList.remove('show');
+        dropdownToggle.classList.remove('active');
+      } else {
+        dropdownMenu.classList.add('show');
+        dropdownToggle.classList.add('active');
+      }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.remove('show');
+        dropdownToggle.classList.remove('active');
+      }
+    });
+    
+    // Close dropdown when window resizes
+    window.addEventListener('resize', function() {
+      dropdownMenu.classList.remove('show');
+      dropdownToggle.classList.remove('active');
+    });
+    
+    // Handle logout action in dropdown
+    const logoutAction = document.querySelector('.logout-action');
+    if (logoutAction) {
+      logoutAction.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Call your logout function here
+        // logout(); // Replace with your actual logout function
+        console.log('Logout clicked from dropdown');
+      });
+    }
+  }
+});
+</script>
