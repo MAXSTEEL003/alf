@@ -207,41 +207,44 @@ export default function AdminFeedback() {
           {loading ? (
             <div className="loading">Loading feedback…</div>
           ) : (
-            <ul className="items">
+            <div className="feedback-cards-container">
               {filtered.map(item => (
-                <li key={item.id} className="review-card" onClick={() => setSelected(item)}>
-                  <div className="review-header">
-                    <div className="left">
-                      <div className={`badge rating r${item.rating}`}>{item.rating}★</div>
+                <div key={item.id} className="feedback-card" onClick={() => setSelected(item)}>
+                  <div className="feedback-card-header">
+                    <div className="feedback-card-info">
+                      <h4 className="feedback-card-name">{item.name || 'Anonymous'}</h4>
+                      <p className="feedback-card-meta">Order: {item.orderId} • {new Date(item.createdAt || Date.now()).toLocaleDateString()}</p>
                     </div>
-                    <div className="main">
-                      <div className="title">{item.name || 'Anonymous'}</div>
-                      <div className="meta-line">Order: {item.orderId} • {new Date(item.createdAt || Date.now()).toLocaleDateString()}</div>
-                    </div>
-                    <div className="right">
-                      <div className="rating-row">
-                        <div className="stars">{Array.from({ length: 5 }).map((_, i) => (
-                          <span key={i} className={i < (item.rating || 0) ? 'star on' : 'star'}>★</span>
-                        ))}</div>
-                        <div className="rating-num">{(item.rating || 0).toFixed ? (Number(item.rating).toFixed(1)) : item.rating}</div>
+                    <div className="feedback-card-rating">
+                      <div className="feedback-stars">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i} className={i < (item.rating || 0) ? 'star filled' : 'star empty'}>★</span>
+                        ))}
                       </div>
+                      <span className="feedback-score">{(item.rating || 0).toFixed ? (Number(item.rating).toFixed(1)) : item.rating}</span>
                     </div>
                   </div>
 
-                  <div className="review-body">
+                  <div className="feedback-card-content">
                     <p>{item.comments || '—'}</p>
                   </div>
 
-                  <div className="review-footer">
-                    <div className="route muted">{item.route || ''}</div>
-                    <div className="actions">
-                      <div className="helpful-count">{helpfulCounts[item.id] || 0} people found this helpful</div>
-                      <button className="btn small secondary" onClick={(e) => { e.stopPropagation(); handleMarkHelpful(item.id); }} disabled={!!markedHelpful[item.id]}>Mark as Helpful</button>
+                  <div className="feedback-card-footer">
+                    <span className="feedback-route">{item.route || ''}</span>
+                    <div className="feedback-actions">
+                      <span className="helpful-text">{helpfulCounts[item.id] || 0} people found this helpful</span>
+                      <button 
+                        className="btn-helpful" 
+                        onClick={(e) => { e.stopPropagation(); handleMarkHelpful(item.id); }} 
+                        disabled={!!markedHelpful[item.id]}
+                      >
+                        Mark as Helpful
+                      </button>
                     </div>
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </section>
 
