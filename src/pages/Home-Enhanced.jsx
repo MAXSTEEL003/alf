@@ -167,13 +167,9 @@ const HomeEnhanced = () => {
         
         {/* Content Overlay */}
         <div className="slideshow-hero-content">
-          <div className="hero-badge">
-            <i className="fas fa-star"></i>
-            <span>India's #1 Logistics Partner</span>
-          </div>
           <h1 className="hero-title">
             <span className="gradient-text">Lightning Fast</span> Logistics
-            <br />Across India
+            <br/>Across India
           </h1>
           <p className="hero-subtitle">
             Experience the future of logistics with AI-powered tracking, 

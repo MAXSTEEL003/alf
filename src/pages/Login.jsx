@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, sanitizeString, checkRateLimit } from '../utils/validation';
 import '../styles/login.css';
 
 export default function Login() {
@@ -51,11 +52,41 @@ export default function Login() {
     setLoading(true);
     
     try {
-      await login(email, password);
+      // Client-side validation
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.isValid) {
+        throw new Error(emailValidation.error);
+      }
+      
+      // Basic password validation
+      if (!password || password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+      
+      if (password.length > 128) {
+        throw new Error('Password is too long');
+      }
+      
+      // Rate limiting check (additional client-side protection)
+      const rateLimitCheck = checkRateLimit(`login_${email}`, 3, 60000); // 3 attempts per minute per email
+      if (!rateLimitCheck.allowed) {
+        throw new Error(rateLimitCheck.error);
+      }
+      
+      // Sanitize inputs
+      const sanitizedEmail = emailValidation.sanitized;
+      const sanitizedPassword = sanitizeString(password);
+      
+      await login(sanitizedEmail, sanitizedPassword);
+      
+      // Clear form on successful login
+      setEmail('');
+      setPassword('');
+      
       navigate(from, { replace: true });
     } catch (error) {
       setError(error.message || 'Failed to login. Please check your credentials.');
-      console.error(error);
+      console.error('Login error:', error);
     } finally {
       setLoading(false);
     }

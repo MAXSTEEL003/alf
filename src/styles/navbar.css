@@ -128,15 +128,23 @@
 /* Logo styling */
 .logo {
   flex-shrink: 0;
-  animation: float-up 3s ease-in-out infinite;
+  margin-left: clamp(1rem, 3vw, 2rem); /* Increased left indentation */
+  padding-left: 0.5rem; /* Additional left spacing */
+}
+
+/* Logo animation - desktop only to avoid mobile performance issues */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  .logo {
+    animation: float-up 3s ease-in-out infinite;
+  }
 }
 
 .logo h1 {
-  font-size: clamp(1.3rem, 3.8vw, 1.8rem);
+  font-size: clamp(1.4rem, 4vw, 2rem);
   font-weight: 800;
   color: #ffffff;
   margin: 0;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 
                0 0 15px rgba(30, 64, 175, 0.25),
                0 1px 3px rgba(0, 0, 0, 0.2);
@@ -622,21 +630,29 @@
 
 @media (max-width: 768px) {
   .header {
-    padding: 0.8rem 0;
+    padding: 1rem 0;
     border-bottom: 1px solid rgba(30, 64, 175, 0.15);
+    /* Stable background on mobile to prevent color transition issues */
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+    background-size: 100% 100%;
   }
 
   .header-container {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1.2rem;
-    padding: 0.8rem 0;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .logo {
+    margin-left: clamp(0.5rem, 2vw, 1rem); /* Reduced indentation on mobile */
+    padding-left: 0.25rem;
   }
 
   .logo h1 {
-    font-size: clamp(1.3rem, 4vw, 1.5rem);
-    letter-spacing: 0.4px;
+    font-size: clamp(1.5rem, 5vw, 1.8rem);
+    letter-spacing: 0.6px;
     font-weight: 800;
     text-align: center;
   }
@@ -874,8 +890,14 @@
     padding: 0.4rem 0;
   }
 
+  .logo {
+    margin-left: 0.5rem; /* Minimal indentation on very small screens */
+    padding-left: 0.25rem;
+  }
+
   .logo h1 {
-    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-size: clamp(1.2rem, 4vw, 1.4rem);
+    letter-spacing: 0.4px;
   }
 
   .main-nav {
@@ -1034,12 +1056,14 @@
   box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
 }
 
-/* Enable animations after initial paint to improve LCP */
-.app-animated .header {
-  animation: gradient-shift 8s ease-in-out infinite;
-}
-.app-animated .admin-header {
-  animation: gradient-shift 8s ease-in-out infinite;
+/* Enable animations after initial paint to improve LCP - desktop only, respect user motion preferences */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  .app-animated .header {
+    animation: gradient-shift 8s ease-in-out infinite;
+  }
+  .app-animated .admin-header {
+    animation: gradient-shift 8s ease-in-out infinite;
+  }
 }
 
 

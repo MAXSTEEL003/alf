@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { subscribeToAuthChanges, signIn, logOut } from '../firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 const AuthContext = createContext(null);
 
@@ -10,6 +12,7 @@ const ATTEMPT_WINDOW = 5 * 60 * 1000; // 5 minutes window for attempts
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loginAttempts, setLoginAttempts] = useState(() => {
     // Load from localStorage on initialization
@@ -17,19 +20,27 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : { count: 0, firstAttempt: null, lockoutUntil: null };
   });
 
+  // Check admin status by Firestore document existence
   useEffect(() => {
-    const unsubscribe = subscribeToAuthChanges((user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
-      setLoading(false);
       
-      // Clear login attempts on successful login
       if (user) {
-        const clearedAttempts = { count: 0, firstAttempt: null, lockoutUntil: null };
-        setLoginAttempts(clearedAttempts);
-        localStorage.removeItem('loginAttempts');
+        try {
+          // Check if /admins/{uid} document exists
+          const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+          setIsAdmin(adminDoc.exists());
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
       }
+      
+      setLoading(false);
     });
-    
+
     return unsubscribe;
   }, []);
 
@@ -43,26 +54,21 @@ export function AuthProvider({ children }) {
   }, [loginAttempts]);
 
   const isAccountLocked = () => {
+    if (!loginAttempts.lockoutUntil) return false;
+    
     const now = Date.now();
-    
-    // Check if still in lockout period
-    if (loginAttempts.lockoutUntil && now < loginAttempts.lockoutUntil) {
-      return true;
-    }
-    
-    // Clear expired lockout
-    if (loginAttempts.lockoutUntil && now >= loginAttempts.lockoutUntil) {
+    if (now >= loginAttempts.lockoutUntil) {
+      // Lockout period has expired, reset attempts
       setLoginAttempts({ count: 0, firstAttempt: null, lockoutUntil: null });
       return false;
     }
     
-    return false;
+    return true;
   };
 
   const getRemainingLockoutTime = () => {
     if (!loginAttempts.lockoutUntil) return 0;
-    const remaining = loginAttempts.lockoutUntil - Date.now();
-    return Math.max(0, Math.ceil(remaining / 1000)); // Return seconds
+    return Math.max(0, Math.ceil((loginAttempts.lockoutUntil - Date.now()) / 1000));
   };
 
   const recordFailedAttempt = () => {
@@ -108,7 +114,9 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      await signIn(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
+      // Reset attempts on successful login
+      setLoginAttempts({ count: 0, firstAttempt: null, lockoutUntil: null });
       return true;
     } catch (error) {
       console.error("Login error:", error);
@@ -137,7 +145,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await logOut();
+      await signOut(auth);
       return true;
     } catch (error) {
       console.error("Logout error:", error);
@@ -147,7 +155,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
-    isAdmin: !!user,
+    isAdmin,
     loading,
     login,
     logout,

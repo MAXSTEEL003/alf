@@ -59,7 +59,6 @@
   --shadow-lg: 0 12px 36px rgba(30, 64, 175, 0.18);
   --shadow-xl: 0 20px 48px rgba(30, 64, 175, 0.25);
   --shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
-  --shadow-sm: 0 4px 12px rgba(30, 64, 175, 0.1);
   --card-shadow: 0 4px 20px rgba(30, 64, 175, 0.08);
   --hover-shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
   --inset-shadow: inset 0 1px 2px rgba(30, 64, 175, 0.05);
@@ -81,6 +80,8 @@
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
   --radius-full: 9999px;
+  /* Default radius used by form inputs and general surfaces */
+  --radius-default: var(--radius);
 
   /* === TYPOGRAPHY === */
   --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
@@ -140,6 +141,10 @@
   --container-max-width: 1280px;
   --container-padding: 1rem;
   
+  /* === LAYOUT HEIGHTS === */
+  --header-height: 80px;
+  --header-height-mobile: 100px;
+
   /* === Z-INDEX SCALE === */
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -155,12 +160,13 @@
   --backdrop-blur-lg: blur(20px);
 }
 
-/* Responsive typography adjustments */
+/* Responsive typography and layout adjustments */
 @media (max-width: 768px) {
   :root {
     --font-size-3xl: 1.5rem;
     --font-size-4xl: 1.875rem;
     --container-padding: 0.75rem;
+    --header-height: var(--header-height-mobile);
   }
 }
 

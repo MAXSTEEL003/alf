@@ -6,6 +6,8 @@ import './styles/theme.css'
 
 // Minimal runtime error overlay to surface production failures
 function installGlobalErrorHandler() {
+  // Disable verbose overlay in production builds
+  if (import.meta.env && import.meta.env.PROD) return;
   window.__appErrorOverlay = document.createElement('div')
   const s = window.__appErrorOverlay.style
   s.position = 'fixed'
@@ -40,8 +42,8 @@ function installGlobalErrorHandler() {
   }
 }
 
-// Install overlay ASAP
-if (typeof window !== 'undefined') {
+// Install overlay ASAP (dev only)
+if (typeof window !== 'undefined' && (!import.meta.env || import.meta.env.DEV)) {
   // If document isn't ready yet, defer until it is
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', installGlobalErrorHandler)
@@ -58,9 +60,14 @@ if (typeof window !== 'undefined') {
   if (fb) try { fb.remove() } catch (_) {}
 }
 
-createRoot(document.getElementById('root')).render(
+const rootEl = document.getElementById('root');
+if (!rootEl) {
+  throw new Error('#root element not found');
+}
+
+createRoot(rootEl).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <App />
     </BrowserRouter>
   </React.StrictMode>

@@ -3,7 +3,6 @@ import {
   getFirestore, 
   collection, 
   doc, 
-  addDoc, 
   setDoc, 
   getDoc,
   getDocs, 
@@ -14,14 +13,38 @@ import {
   deleteDoc, 
   onSnapshot,
   arrayUnion,
-  serverTimestamp 
+  serverTimestamp,
+  runTransaction,
+  addDoc
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-// Firebase configuration
-// Replace these with your actual Firebase project config
+// Firebase configuration with environment validation
 // Vite exposes env vars via import.meta.env. Prefix your variables with VITE_ in
 // a .env file at the project root (see .env.example).
+
+// Validate required environment variables
+const requiredEnvVars = {
+  VITE_FIREBASE_API_KEY: import.meta.env.VITE_FIREBASE_API_KEY,
+  VITE_FIREBASE_AUTH_DOMAIN: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  VITE_FIREBASE_PROJECT_ID: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  VITE_FIREBASE_STORAGE_BUCKET: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  VITE_FIREBASE_MESSAGING_SENDER_ID: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  VITE_FIREBASE_APP_ID: import.meta.env.VITE_FIREBASE_APP_ID
+};
+
+// Check for missing environment variables
+const missingVars = Object.entries(requiredEnvVars)
+  .filter(([key, value]) => !value)
+  .map(([key]) => key);
+
+if (missingVars.length > 0) {
+  throw new Error(
+    `Missing required Firebase environment variables: ${missingVars.join(', ')}. ` +
+    'Please check your .env file and ensure all Firebase configuration values are set.'
+  );
+}
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -73,45 +96,45 @@ const feedbackLinksCollection = collection(db, 'feedbackLinks');
 const countersCollection = collection(db, 'counters');
 const enquiriesCollection = collection(db, 'enquiries');
 
-// Get next order number
+// Get next order number using a Firestore transaction to avoid race conditions.
+// Starts at 10000 and increments by 1 atomically.
 export async function getNextOrderNumber() {
   try {
     const counterDocRef = doc(db, 'counters', 'orderCounter');
-    const counterDoc = await getDoc(counterDocRef);
-    
-    let nextNumber = 10000; // Start from 5 digits
-    
-    if (counterDoc.exists()) {
-      const currentCount = counterDoc.data().count;
-      nextNumber = currentCount >= 10000 ? currentCount + 1 : 10000;
-    }
-    
-    // Update the counter
-    await setDoc(counterDocRef, { count: nextNumber });
-    
+    const nextNumber = await runTransaction(db, async (tx) => {
+      const snap = await tx.get(counterDocRef);
+      let current = 10000;
+      if (snap.exists()) {
+        const stored = snap.data().count;
+        current = stored >= 10000 ? stored : 10000; // normalize if below baseline
+      } else {
+        tx.set(counterDocRef, { count: current });
+      }
+      const next = current + 1; // increment
+      tx.set(counterDocRef, { count: next });
+      return next;
+    });
     return nextNumber;
   } catch (error) {
-    console.error('Error getting next order number:', error);
-    // Fallback to timestamp-based ID if counter fails
-    return 10000 + (Date.now() % 90000); // Ensures 5 digits
+    console.error('Error getting next order number (transaction fallback):', error);
+    // Fallback: derive pseudo-sequential number with time component (still >= 10000)
+    return 10000 + (Date.now() % 90000);
   }
 }
 
 // Test function to verify Firestore connection
 export async function testConnection() {
   try {
-    console.log('Testing Firestore connection...');
+    if (import.meta.env.DEV) console.log('[dev] Testing Firestore connection...');
     const testDoc = doc(db, 'test', 'connection');
     await setDoc(testDoc, { 
       message: 'Hello Firestore!', 
-      timestamp: new Date().toISOString() 
+      timestamp: serverTimestamp() 
     });
-    console.log('✅ Firestore connection successful!');
+    if (import.meta.env.DEV) console.log('✅ Firestore connection successful!');
     return true;
   } catch (error) {
     console.error('❌ Firestore connection failed:', error);
-    console.error('Error code:', error.code);
-    console.error('Error message:', error.message);
     return false;
   }
 }
@@ -119,38 +142,39 @@ export async function testConnection() {
 // Orders CRUD operations
 export async function createOrder(orderData) {
   try {
-    console.log('Creating order with data:', orderData);
-    
+    if (import.meta.env.DEV) console.log('Creating order with data:', orderData);
+    // Normalize searchable fields
+    const customerLower = (orderData.customer || '').toLowerCase();
     if (orderData.id) {
-      // If ID is provided, use setDoc
       const docRef = doc(db, 'orders', orderData.id);
       const docData = {
         ...orderData,
-        createdAt: new Date().toISOString(),
+        id: orderData.id,
+        customerLower,
+        createdAt: serverTimestamp(),
         status: 'active',
         checkpoints: orderData.checkpoints || []
       };
-      
-      console.log('Using setDoc with data:', docData);
       await setDoc(docRef, docData);
-      return { id: orderData.id, ...docData };
+      const snap = await getDoc(docRef);
+      return { id: snap.id, ...snap.data() };
     } else {
-      // Otherwise use addDoc to generate an ID
+      // Pre-generate an ID so we can embed it inside the document
+      const docRef = doc(ordersCollection);
       const docData = {
         ...orderData,
-        createdAt: new Date().toISOString(),
+        id: docRef.id,
+        customerLower,
+        createdAt: serverTimestamp(),
         status: 'active',
         checkpoints: orderData.checkpoints || []
       };
-      
-      console.log('Using addDoc with data:', docData);
-      const docRef = await addDoc(ordersCollection, docData);
-      return { id: docRef.id, ...docData };
+      await setDoc(docRef, docData);
+      const snap = await getDoc(docRef);
+      return { id: snap.id, ...snap.data() };
     }
   } catch (error) {
     console.error('Error in createOrder:', error);
-    console.error('Error code:', error.code);
-    console.error('Error message:', error.message);
     throw error;
   }
 }
@@ -174,34 +198,44 @@ export async function getAllOrders() {
 }
 
 export async function searchOrdersByCustomer(customerName) {
-  const q = query(
-    ordersCollection, 
-    where('customer', '>=', customerName),
-    where('customer', '<=', customerName + '\uf8ff')
+  const name = customerName || '';
+  const lower = name.toLowerCase();
+  // Try normalized field first
+  const q1 = query(
+    ordersCollection,
+    where('customerLower', '>=', lower),
+    where('customerLower', '<=', lower + '\uf8ff')
   );
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  const snap1 = await getDocs(q1);
+  if (snap1.size > 0) {
+    return snap1.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+  // Fallback for legacy docs without customerLower
+  const q2 = query(
+    ordersCollection,
+    where('customer', '>=', name),
+    where('customer', '<=', name + '\uf8ff')
+  );
+  const snap2 = await getDocs(q2);
+  return snap2.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 export async function searchOrdersById(orderId) {
-  const q = query(
-    ordersCollection,
-    where('id', '==', orderId)
-  );
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  if (!orderId) return [];
+  // Direct lookup by document ID is cheaper; we also stored id field for redundancy.
+  const direct = await getOrderById(orderId);
+  if (direct) return [direct];
+  // Fallback: query id field (in case of legacy docs).
+  const q = query(ordersCollection, where('id', '==', orderId));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 export async function updateOrder(id, data) {
   const docRef = doc(db, 'orders', id);
   await updateDoc(docRef, data);
-  return { id, ...data };
+  const snap = await getDoc(docRef);
+  return { id: snap.id, ...snap.data() };
 }
 
 export async function deleteOrderById(orderId) {
@@ -215,19 +249,22 @@ export async function completeOrder(id) {
   const docRef = doc(db, 'orders', id);
   await updateDoc(docRef, {
     status: 'delivered',
-    deliveredAt: new Date().toISOString()
+    deliveredAt: serverTimestamp()
   });
-  return id;
+  const snap = await getDoc(docRef);
+  return { id: snap.id, ...snap.data() };
 }
 
 export async function addCheckpointToOrder(orderId, checkpoint) {
-  if (!orderId) return;
+  if (!orderId || !checkpoint) return;
   const docRef = doc(db, 'orders', orderId);
-  // Use arrayUnion to append the checkpoint
+  const payload = typeof checkpoint === 'string'
+    ? { text: checkpoint, at: serverTimestamp() }
+    : { ...checkpoint, at: checkpoint.at || serverTimestamp() };
   await updateDoc(docRef, {
-    checkpoints: arrayUnion(checkpoint)
+    checkpoints: arrayUnion(payload)
   });
-  return checkpoint;
+  return payload;
 }
 
 // Real-time subscriptions
@@ -258,9 +295,10 @@ export function subscribeOrder(orderId, onChange) {
 export async function createFeedback(feedbackData) {
   const docRef = await addDoc(feedbackCollection, {
     ...feedbackData,
-    createdAt: new Date().toISOString()
+    createdAt: serverTimestamp()
   });
-  return { id: docRef.id, ...feedbackData };
+  const snap = await getDoc(docRef);
+  return { id: snap.id, ...snap.data() };
 }
 
 export async function getFeedbackByOrderId(orderId) {
@@ -287,21 +325,29 @@ export function subscribeFeedback(onChange) {
 }
 
 // Feedback link generation and resolution
-function generateToken(length = 10) {
-  // Simple URL-safe token: base36 + timestamp tail
-  const rand = Math.random().toString(36).slice(2);
-  const time = Date.now().toString(36).slice(-4);
-  return (rand + time).slice(0, length);
+function generateToken(length = 24) {
+  try {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const bytes = new Uint8Array(length);
+    // crypto.getRandomValues is available in browsers; if not, fallback.
+    (globalThis.crypto || globalThis.msCrypto).getRandomValues(bytes);
+    return Array.from(bytes).map(b => alphabet[b % alphabet.length]).join('');
+  } catch (_) {
+    // Fallback to less secure generation if crypto unavailable (unlikely in modern browsers)
+    return Array.from({ length }).map(() => Math.random().toString(36)[2] || 'x').join('');
+  }
 }
 
 export async function createFeedbackLink(orderId, opts = {}) {
-  const token = generateToken(12);
+  const token = generateToken();
   const ref = doc(feedbackLinksCollection, token);
+  const defaultExpiryMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+  const expiresAtIso = new Date(Date.now() + defaultExpiryMs).toISOString();
   const payload = {
     orderId,
     status: 'active',
-    createdAt: new Date().toISOString(),
-    ...(opts.expiresAt ? { expiresAt: opts.expiresAt } : {})
+    createdAt: serverTimestamp(),
+    expiresAt: opts.expiresAt || expiresAtIso
   };
   await setDoc(ref, payload);
   return { token, ...payload };
@@ -313,31 +359,31 @@ export async function getOrderIdByFeedbackToken(token) {
   const snap = await getDoc(ref);
   if (!snap.exists()) return null;
   const data = snap.data();
-  // Optional: check expiry
+  // Check expiry and status
   if (data.expiresAt) {
-    try {
-      const exp = new Date(data.expiresAt).getTime();
-      if (Date.now() > exp) return null;
-    } catch (_) {}
+    const exp = Date.parse(data.expiresAt);
+    if (!Number.isNaN(exp) && Date.now() > exp) {
+      try { await updateDoc(ref, { status: 'expired' }); } catch (_) {}
+      return null;
+    }
   }
+  if (data.status === 'expired') return null;
   return data.orderId || null;
 }
 
 // Enquiry operations
 export async function createEnquiry(enquiryData) {
   try {
-    console.log('Attempting to create enquiry with data:', enquiryData);
+    if (import.meta.env.DEV) console.log('[dev] Attempting to create enquiry:', enquiryData);
     const docRef = await addDoc(enquiriesCollection, {
       ...enquiryData,
       timestamp: serverTimestamp()
     });
-    console.log('Enquiry created successfully with ID:', docRef.id);
-    return { id: docRef.id, ...enquiryData };
+    if (import.meta.env.DEV) console.log('[dev] Enquiry created with ID:', docRef.id);
+    const snap = await getDoc(docRef);
+    return { id: snap.id, ...snap.data() };
   } catch (error) {
     console.error('Error creating enquiry:', error);
-    console.error('Error code:', error.code);
-    console.error('Error message:', error.message);
-    console.error('Full error:', JSON.stringify(error));
     throw error;
   }
 }

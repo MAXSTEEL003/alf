@@ -1,0 +1,84 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    function authed() { 
+      return request.auth != null; 
+    }
+    
+    // Check if user is admin by Firestore document existence
+    function isAdmin() {
+      return authed() && 
+             firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+    
+    function validSize(maxMB) {
+      return request.resource.size < maxMB * 1024 * 1024;
+    }
+    
+    function validType(allowedTypes) {
+      return request.resource.contentType in allowedTypes;
+    }
+    
+    // ============================================
+    // ORDER ATTACHMENTS - Admin Only
+    // ============================================
+    
+    match /orders/{orderId}/{fileName} {
+      // Authenticated users can read order files
+      allow read: if authed();
+      
+      // Only admins can upload order files
+      allow create: if isAdmin() &&
+                    validSize(10) &&
+                    validType([
+                      'image/jpeg',
+                      'image/png',
+                      'image/webp',
+                      'application/pdf',
+                      'text/plain'
+                    ]);
+      
+      // Only admins can delete order files
+      allow delete: if isAdmin();
+      
+      // Prevent updates (delete + recreate instead)
+      allow update: if false;
+    }
+    
+    // ============================================
+    // USER PROFILE AVATARS - Self-Managed
+    // ============================================
+    
+    match /profiles/{uid}/avatar/{fileName} {
+      // Anyone authenticated can read avatars
+      allow read: if authed();
+      
+      // Users can only upload/update their own avatar
+      allow create, update: if authed() && 
+                            request.auth.uid == uid &&
+                            validSize(2) &&
+                            validType([
+                              'image/jpeg',
+                              'image/png',
+                              'image/webp'
+                            ]);
+      
+      // Users can only delete their own avatar
+      allow delete: if authed() && request.auth.uid == uid;
+    }
+    
+    // ============================================
+    // DEFAULT DENY ALL
+    // ============================================
+    
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

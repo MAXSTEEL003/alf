@@ -41,13 +41,18 @@ body, #root {
 
 body {
   font-family: var(--font-family);
-  background: linear-gradient(180deg, var(--background) 0%, var(--darker-bg) 100%);
-  background-attachment: fixed;
+  background: var(--background);
   color: var(--text-color);
-  line-height: var(--line-height-normal);
-  letter-spacing: var(--letter-spacing-normal);
-  -webkit-tap-highlight-color: transparent;
-  overflow-x: hidden;
+  line-height: 1.6;
+.btn-secondary { background:#f1f5f9; color:var(--primary-color); border:1px solid rgba(30,64,175,.25); box-shadow:none; }
+.btn-secondary:hover { background:#e2e8f0; }
+.btn-ghost { background:transparent; color:var(--primary-color); border:1px solid rgba(30,64,175,.25); box-shadow:none; }
+.btn-ghost:hover { background:rgba(30,64,175,.06); }
+}
+.skip-link:focus, .skip-link:active {
+  top: 8px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 /* ============================================
@@ -120,15 +125,15 @@ input[type="button"],
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  padding: .65rem 1.1rem;
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
+  font-size: .95rem;
+  font-weight: 500;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   overflow: hidden;
-  transition: all var(--transition-medium) ease;
+  transition: background-color var(--transition-medium) var(--easing-in-out), box-shadow var(--transition-medium) var(--easing-in-out), transform var(--transition-fast) var(--easing-in-out);
   transform: translateZ(0);
   will-change: transform, box-shadow;
 }
@@ -167,24 +172,25 @@ input[type="button"]:active::before,
   }
 }
 
-/* Primary button */
+/* Base primary button */
 .btn,
-.btn-primary,
 button,
 input[type="submit"],
 input[type="button"] {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  color: white;
-  box-shadow: var(--shadow-md);
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(30,64,175,.18);
 }
+/* Gradient variant */
+.btn-primary { background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); }
 
 .btn:hover,
 .btn-primary:hover,
 button:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
-  transform: translateY(-2px) translateZ(0);
-  box-shadow: var(--hover-shadow);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30,64,175,.22);
 }
 
 .btn:active,
@@ -192,8 +198,8 @@ input[type="button"]:hover {
 button:active,
 input[type="submit"]:active,
 input[type="button"]:active {
-  transform: translateY(0) translateZ(0);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(30,64,175,.28);
 }
 
 .btn:focus-visible,
@@ -261,6 +267,12 @@ input[type="button"]:disabled {
   background: linear-gradient(135deg, #10B981, #059669);
   color: white;
 }
+
+/* Layout & spacing utilities */
+.section { padding: clamp(2rem,5vw,3rem) 0; }
+.section--tight { padding: clamp(1rem,3vw,1.5rem) 0; }
+.stack > * + * { margin-top: var(--space-md); }
+.stack-lg > * + * { margin-top: var(--space-lg); }
 
 /* ============================================
    FORM ELEMENTS
@@ -641,7 +653,7 @@ label {
 }
 
 /* ============================================
-   LOADING STATES
+   LOADING STATES - Smooth, no-glitch spinner
    ============================================ */
 
 .page-loading {
@@ -653,13 +665,17 @@ label {
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top: 3px solid #3B82F6;
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(59, 130, 246, 0.15);
+  border-top-color: #3B82F6;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
   font-size: 0;
+  /* Hardware acceleration for smoother animation */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 @keyframes fadeIn {
@@ -668,8 +684,8 @@ label {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg) translateZ(0); }
+  100% { transform: rotate(360deg) translateZ(0); }
 }
 
 /* ============================================
