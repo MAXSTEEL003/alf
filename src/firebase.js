@@ -369,6 +369,23 @@ function sanitizePublicOrder(order) {
   return safe;
 }
 
+// Admin-only: ensure public mirror exists and is up to date
+export async function syncOrderToPublic(orderId) {
+  if (!orderId) return false;
+  try {
+    const srcRef = doc(db, 'orders', orderId);
+    const dstRef = doc(db, `orders/${orderId}/public/info`);
+    const snap = await getDoc(srcRef);
+    if (!snap.exists()) return false;
+    const data = snap.data() || {};
+    await setDoc(dstRef, sanitizePublicOrder({ id: orderId, ...data }), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('syncOrderToPublic failed:', err);
+    return false;
+  }
+}
+
 // Feedback operations
 export async function createFeedback(feedbackData) {
   const docRef = await addDoc(feedbackCollection, {

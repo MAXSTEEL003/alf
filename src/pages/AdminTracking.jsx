@@ -8,7 +8,8 @@ import {
   completeOrder,
   searchOrdersByCustomer,
   searchOrdersById,
-  createFeedbackLink
+  createFeedbackLink,
+  syncOrderToPublic
 } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import '../styles/admin-tracking.css';
@@ -202,6 +203,8 @@ function OrderDetail() {
 
   useEffect(() => {
     const unsub = subscribeOrder(id, setOrder);
+    // Try to backfill the public mirror when an admin views the order
+    (async () => { try { await syncOrderToPublic(id); } catch (_) {} })();
     return () => unsub();
   }, [id]);
 
