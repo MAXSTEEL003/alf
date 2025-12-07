@@ -156,6 +156,8 @@ export async function createOrder(orderData) {
         checkpoints: orderData.checkpoints || []
       };
       await setDoc(docRef, docData);
+      // Mirror minimal public fields for shareable tracking view
+      await setDoc(doc(db, `orders/${orderData.id}/public/info`), sanitizePublicOrder(docData), { merge: true });
       const snap = await getDoc(docRef);
       return { id: snap.id, ...snap.data() };
     } else {
@@ -170,6 +172,8 @@ export async function createOrder(orderData) {
         checkpoints: orderData.checkpoints || []
       };
       await setDoc(newRef, docData);
+      // Public mirror
+      await setDoc(doc(db, `orders/${newRef.id}/public/info`), sanitizePublicOrder(docData), { merge: true });
       const snap = await getDoc(newRef);
       return { id: snap.id, ...snap.data() };
     }
@@ -251,6 +255,19 @@ export async function completeOrder(id) {
     status: 'delivered',
     deliveredAt: serverTimestamp()
   });
+  // Update public mirror status
+  try {
+    await updateDoc(doc(db, `orders/${id}/public/info`), {
+      status: 'delivered',
+      deliveredAt: serverTimestamp()
+    });
+  } catch (_) {
+    // If mirror doc doesn't exist yet, create it
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      await setDoc(doc(db, `orders/${id}/public/info`), sanitizePublicOrder({ id, ...snap.data() }), { merge: true });
+    }
+  }
   const snap = await getDoc(docRef);
   return { id: snap.id, ...snap.data() };
 }
@@ -268,6 +285,20 @@ export async function addCheckpointToOrder(orderId, checkpoint) {
     await updateDoc(docRef, {
       checkpoints: arrayUnion(cp)
     });
+    // Append to public mirror
+    try {
+      await updateDoc(doc(db, `orders/${orderId}/public/info`), {
+        checkpoints: arrayUnion(cp)
+      });
+    } catch (_) {
+      // Create mirror if missing
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data() || {};
+        const current = Array.isArray(data.checkpoints) ? data.checkpoints : [];
+        await setDoc(doc(db, `orders/${orderId}/public/info`), sanitizePublicOrder({ id: orderId, ...data, checkpoints: [...current, cp] }), { merge: true });
+      }
+    }
     return cp;
   } catch (e) {
     try {
@@ -278,6 +309,15 @@ export async function addCheckpointToOrder(orderId, checkpoint) {
         const current = Array.isArray(data.checkpoints) ? data.checkpoints : [];
         tx.update(docRef, { checkpoints: [...current, cp] });
       });
+      // Mirror transaction result to public
+      try {
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data() || {};
+          const current = Array.isArray(data.checkpoints) ? data.checkpoints : [];
+          await setDoc(doc(db, `orders/${orderId}/public/info`), sanitizePublicOrder({ id: orderId, ...data, checkpoints: [...current] }), { merge: true });
+        }
+      } catch (_) {}
       return cp;
     } catch (err) {
       console.error('Failed to append checkpoint:', err);
@@ -308,6 +348,25 @@ export function subscribeOrder(orderId, onChange) {
       onChange(null);
     }
   });
+}
+
+// Helper: sanitize fields for the public mirror
+function sanitizePublicOrder(order) {
+  // Only include non-sensitive fields
+  const safe = {
+    id: order.id,
+    origin: order.origin || '',
+    destination: order.destination || '',
+    customer: order.customer || '',
+    status: order.status || 'active',
+    deliveredAt: order.deliveredAt || null,
+    checkpoints: Array.isArray(order.checkpoints) ? order.checkpoints.map((c) => ({
+      id: c.id,
+      text: c.text,
+      time: c.time
+    })) : []
+  };
+  return safe;
 }
 
 // Feedback operations

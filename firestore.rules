@@ -65,6 +65,18 @@ service cloud.firestore {
       // Admin can delete orders
       allow delete: if isAdmin();
     }
+
+    // ============================================
+    // PUBLIC ORDER MIRROR - Readable by anyone
+    // Path: orders/{orderId}/public/{docId}
+    // We store a sanitized snapshot for public tracking views.
+    // ============================================
+    match /orders/{orderId}/public/{docId} {
+      // Public read access for tracking
+      allow read: if true;
+      // Only admins may write/update the public mirror
+      allow write: if isAdmin();
+    }
     
     // ============================================
     // ORDER COUNTER - Admin Only
