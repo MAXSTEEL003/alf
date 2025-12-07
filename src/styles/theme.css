@@ -40,6 +40,7 @@ body, #root {
 }
 
 body {
+  margin: 0; /* Remove default UA margins to eliminate page gaps */
   font-family: var(--font-family);
   background: var(--background);
   color: var(--text-color);

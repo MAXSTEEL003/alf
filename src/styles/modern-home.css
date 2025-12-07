@@ -8,11 +8,163 @@
   line-height: 1.6;
   color: var(--text-color);
   overflow-x: hidden;
+  margin-top: -80px; /* Pull up to eliminate .main padding-top gap */
+}
+
+/* Slideshow hero - flush under navbar */
+.slideshow-hero {
+  position: relative;
+  width: 100%;
+  min-height: 75vh;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-top: 0; /* Reset - parent .modern-home handles the offset */
+  overflow: hidden;
+}
+
+/* Container for slideshow images */
+.slideshow-hero .slideshow-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.slideshow-hero .slideshow-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Add dark overlay gradient for better text readability */
+.slideshow-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 23, 42, 0.3) 0%,
+    rgba(15, 23, 42, 0.4) 50%,
+    rgba(15, 23, 42, 0.6) 100%
+  );
+  z-index: 5;
+  pointer-events: none;
+}
+
+.slideshow-hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  width: 90%;
+  max-width: 1200px;
+  color: white;
+  animation: fadeInUp 1s ease-out;
+  padding: 3rem 1rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slideshow-hero-content .hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  text-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.5),
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(30, 64, 175, 0.2);
+  letter-spacing: -0.02em;
+}
+
+.slideshow-hero-content .hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: 2rem;
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+  line-height: 1.6;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.95;
+}
+
+.slideshow-hero-content .hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.slideshow-hero-content .trust-indicators {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.slideshow-hero-content .trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Enhance slide images for hero */
+.slideshow-hero .slide img {
+  filter: brightness(1.22) contrast(1.07) saturate(1.12);
+}
+
+.slideshow-hero .slide-indicators {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
 }
 
 /* ============================================
-   HERO SECTION - Enhanced
+   HERO SECTION - Enhanced / Slideshow variant
    ============================================ */
+/* .slideshow-hero {
+  margin: 0;
+  padding: 0;
+} */
+/* Removed duplicate - consolidated above */
+
+
+/* Remove rounded corners/shadow so the hero sits flush under header */
+.slideshow-hero .slideshow-wrapper {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Ensure indicators and controls don’t add vertical gap */
+.slideshow-hero .slide-indicators {
+  margin-top: 0;
+}
 .hero-section {
   position: relative;
   min-height: 45vh;
@@ -1084,10 +1236,9 @@
 
 @media (max-width: 768px) {
   .slideshow-hero {
-    min-height: 65vh;
-    padding-top: calc(var(--header-height) + 6rem); /* Increased padding for more clearance */
-    padding-bottom: 3rem;
-    margin-top: 3rem; /* Increased margin for better visual separation */
+    min-height: 60vh;
+    max-height: 70vh;
+    margin-top: 0; /* Parent .modern-home handles offset */
   }
   
   .slideshow-hero-content {
@@ -1163,10 +1314,9 @@
 
 @media (max-width: 480px) {
   .slideshow-hero {
-    min-height: 60vh;
-    padding-top: calc(var(--header-height) + 7rem); /* Increased padding for small mobile screens */
-    padding-bottom: 2rem;
-    margin-top: 3.5rem; /* Increased margin for better clearance */
+    min-height: 55vh;
+    max-height: 65vh;
+    margin-top: 0; /* Parent .modern-home handles offset */
   }
   
   .slideshow-hero-content {
@@ -1209,10 +1359,9 @@
 /* Extra small devices (320px and below) */
 @media (max-width: 360px) {
   .slideshow-hero {
-    min-height: 55vh;
-    padding-top: calc(var(--header-height) + 8rem); /* Maximum padding for very small screens */
-    padding-bottom: 2rem;
-    margin-top: 4rem; /* Increased margin for tiny screens */
+    min-height: 50vh;
+    max-height: 60vh;
+    margin-top: 0; /* Parent .modern-home handles offset */
   }
   
   /* Extra small mobile hero badge styles removed - no longer used */
