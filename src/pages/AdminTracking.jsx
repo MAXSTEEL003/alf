@@ -207,20 +207,30 @@ function OrderDetail() {
 
   async function addCheckpoint(e) {
     e.preventDefault();
-    if (!note.trim()) return;
-    if (!id) return;
+    const text = note.trim();
+    if (!text) {
+      alert('Please enter an update before submitting.');
+      return;
+    }
+    if (!id) {
+      alert('Order ID missing. Please reload the page.');
+      return;
+    }
     
     setLoading(true);
     try {
       const cp = { 
         id: 'cp-' + Date.now(), 
-        text: note.trim(), 
+        text, 
+        // Client time is only for local display; Firestore uses serverTimestamp
         time: new Date().toISOString() 
       };
       await addCheckpointToOrder(id, cp);
+      // Rely on Firestore onSnapshot to update UI; avoid double entries
       setNote('');
     } catch (error) {
-      console.error("Error adding checkpoint:", error);
+      console.error('Error adding checkpoint:', error);
+      alert('Failed to add update. Check your internet connection and Firestore rules.');
     } finally {
       setLoading(false);
     }

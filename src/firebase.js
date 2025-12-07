@@ -160,17 +160,17 @@ export async function createOrder(orderData) {
       return { id: snap.id, ...snap.data() };
     } else {
       // Pre-generate an ID so we can embed it inside the document
-      const docRef = doc(ordersCollection);
+      const newRef = doc(ordersCollection);
       const docData = {
         ...orderData,
-        id: docRef.id,
+        id: newRef.id,
         customerLower,
         createdAt: serverTimestamp(),
         status: 'active',
         checkpoints: orderData.checkpoints || []
       };
-      await setDoc(docRef, docData);
-      const snap = await getDoc(docRef);
+      await setDoc(newRef, docData);
+      const snap = await getDoc(newRef);
       return { id: snap.id, ...snap.data() };
     }
   } catch (error) {
@@ -258,13 +258,32 @@ export async function completeOrder(id) {
 export async function addCheckpointToOrder(orderId, checkpoint) {
   if (!orderId || !checkpoint) return;
   const docRef = doc(db, 'orders', orderId);
-  const payload = typeof checkpoint === 'string'
-    ? { text: checkpoint, at: serverTimestamp() }
-    : { ...checkpoint, at: checkpoint.at || serverTimestamp() };
-  await updateDoc(docRef, {
-    checkpoints: arrayUnion(payload)
-  });
-  return payload;
+  // Use client-side ISO timestamp for array elements (serverTimestamp not supported in arrays)
+  const cp = {
+    id: checkpoint?.id || ('cp-' + Date.now()),
+    text: checkpoint?.text || '',
+    time: checkpoint?.time || new Date().toISOString()
+  };
+  try {
+    await updateDoc(docRef, {
+      checkpoints: arrayUnion(cp)
+    });
+    return cp;
+  } catch (e) {
+    try {
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(docRef);
+        if (!snap.exists()) throw new Error('Order not found');
+        const data = snap.data() || {};
+        const current = Array.isArray(data.checkpoints) ? data.checkpoints : [];
+        tx.update(docRef, { checkpoints: [...current, cp] });
+      });
+      return cp;
+    } catch (err) {
+      console.error('Failed to append checkpoint:', err);
+      throw err;
+    }
+  }
 }
 
 // Real-time subscriptions

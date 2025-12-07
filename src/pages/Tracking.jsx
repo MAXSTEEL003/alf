@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Routes, Route, Link, useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import {
   subscribeOrders,
   subscribeOrder,
@@ -99,19 +100,38 @@ function OrderDetail() {
   const [showShare, setShowShare] = useState(false)
   const [phone, setPhone] = useState('')
   const [shareUrl, setShareUrl] = useState('')
+  const { isAdmin } = useAuth()
 
   useEffect(() => {
     const unsub = subscribeOrder(id, setOrder)
     return () => unsub()
   }, [id])
 
+  const [loading, setLoading] = useState(false)
+
   async function addCheckpoint(e) {
     e.preventDefault()
-    if (!note.trim()) return
-    if (!id) return
-    const cp = { id: 'cp-' + Date.now(), text: note.trim(), time: new Date().toISOString() }
-    await addCheckpointToOrder(id, cp)
-    setNote('')
+    const text = note.trim()
+    if (!text) {
+      alert('Please enter an update before submitting.')
+      return
+    }
+    if (!id) {
+      alert('Order ID missing. Please reload the page.')
+      return
+    }
+    setLoading(true)
+    try {
+      const cp = { id: 'cp-' + Date.now(), text, time: new Date().toISOString() }
+      await addCheckpointToOrder(id, cp)
+      setNote('')
+      // Avoid optimistic append to prevent duplicate entries; onSnapshot will refresh
+    } catch (err) {
+      console.error('Failed to add checkpoint', err)
+      alert('Failed to add update. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   function generateShareLink() {
@@ -198,15 +218,17 @@ function OrderDetail() {
           </div>
         </div>
 
-        <form onSubmit={addCheckpoint} className="checkpoint-form">
-          <input 
-            value={note} 
-            onChange={e => setNote(e.target.value)} 
-            placeholder="Add a checkpoint update..." 
-            className="checkpoint-input"
-          />
-          <button className="btn btn-primary" type="submit">Add Checkpoint</button>
-        </form>
+        {isAdmin && (
+          <form onSubmit={addCheckpoint} className="checkpoint-form">
+            <input 
+              value={note} 
+              onChange={e => setNote(e.target.value)} 
+              placeholder="Add a checkpoint update..." 
+              className="checkpoint-input"
+            />
+            <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? 'Adding…' : 'Add Checkpoint'}</button>
+          </form>
+        )}
 
         <div className="order-actions">
           <button className="btn btn-danger" onClick={removeOrder}>Delete Order</button>

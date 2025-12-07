@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getOrderById } from '../firebase';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase';
 import '../styles/feedback.css';
 
 export default function ShareView() {
@@ -12,13 +13,24 @@ export default function ShareView() {
   useEffect(() => {
     async function fetchOrder() {
       try {
-        const orderData = await getOrderById(id);
+        // Read from public mirror: orders/{id}/public/info
+        const ref = doc(db, `orders/${id}/public/info`);
+        const snap = await getDoc(ref);
+        const orderData = snap.exists() ? snap.data() : null;
         if (orderData) {
           // Sort checkpoints by time (newest first)
           if (orderData.checkpoints && orderData.checkpoints.length > 0) {
+            const toMillis = (t) => {
+              if (!t) return 0;
+              // Firestore Timestamp support
+              if (t.seconds != null && t.nanoseconds != null) {
+                return t.seconds * 1000 + Math.floor(t.nanoseconds / 1e6);
+              }
+              try { return new Date(t).getTime(); } catch (_) { return 0; }
+            };
             orderData.checkpoints.sort((a, b) => {
-              const timeA = new Date(a.time).getTime();
-              const timeB = new Date(b.time).getTime();
+              const timeA = toMillis(a.time);
+              const timeB = toMillis(b.time);
               return timeB - timeA; // Descending order (newest first)
             });
           }
@@ -147,7 +159,17 @@ export default function ShareView() {
                       <div className="checkpoint-inner">
                         <div className="cp-text">{cp.text}</div>
                         <div className="cp-time">
-                          {new Date(cp.time).toLocaleString()}
+                          {(() => {
+                            const toDate = (t) => {
+                              if (!t) return null;
+                              if (t.seconds != null && t.nanoseconds != null) {
+                                return new Date(t.seconds * 1000 + Math.floor(t.nanoseconds / 1e6));
+                              }
+                              try { return new Date(t); } catch (_) { return null; }
+                            };
+                            const d = toDate(cp.time);
+                            return d ? d.toLocaleString() : '';
+                          })()}
                         </div>
                       </div>
                       {index === 0 && (
