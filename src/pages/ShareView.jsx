@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import '../styles/feedback.css';
 
@@ -11,42 +11,48 @@ export default function ShareView() {
   const [error, setError] = useState(null);
   
   useEffect(() => {
-    async function fetchOrder() {
+    // Subscribe to public mirror for real-time updates
+    const ref = doc(db, `orders/${id}/public/info`);
+    const unsub = onSnapshot(ref, (snap) => {
       try {
-        // Read from public mirror: orders/{id}/public/info
-        const ref = doc(db, `orders/${id}/public/info`);
-        const snap = await getDoc(ref);
-        const orderData = snap.exists() ? snap.data() : null;
+        if (!snap.exists()) {
+          setError('Order not found');
+          setOrder(null);
+          setLoading(false);
+          return;
+        }
+        const orderData = snap.data() || null;
         if (orderData) {
           // Sort checkpoints by time (newest first)
           if (orderData.checkpoints && orderData.checkpoints.length > 0) {
             const toMillis = (t) => {
               if (!t) return 0;
-              // Firestore Timestamp support
               if (t.seconds != null && t.nanoseconds != null) {
                 return t.seconds * 1000 + Math.floor(t.nanoseconds / 1e6);
               }
               try { return new Date(t).getTime(); } catch (_) { return 0; }
             };
-            orderData.checkpoints.sort((a, b) => {
+            orderData.checkpoints = [...orderData.checkpoints].sort((a, b) => {
               const timeA = toMillis(a.time);
               const timeB = toMillis(b.time);
               return timeB - timeA; // Descending order (newest first)
             });
           }
           setOrder(orderData);
-        } else {
-          setError('Order not found');
+          setError(null);
         }
-      } catch (error) {
-        console.error("Error fetching order:", error);
+      } catch (err) {
+        console.error('Error parsing order snapshot', err);
         setError('Failed to load order information');
       } finally {
         setLoading(false);
       }
-    }
-    
-    fetchOrder();
+    }, (err) => {
+      console.error('ShareView subscription error', err);
+      setError('Failed to load order information');
+      setLoading(false);
+    });
+    return () => unsub();
   }, [id]);
 
   if (loading) {
