@@ -1,0 +1,198 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    function authed() { 
+      return request.auth != null; 
+    }
+    
+    // Check if user is admin by document existence in admins collection
+    function isAdmin() {
+      return authed() && 
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    function str(s, min, max) { 
+      return s is string && s.size() >= min && s.size() <= max; 
+    }
+    
+    function email(e) { 
+      return e is string && 
+             e.size() <= 254 && 
+             e.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'); 
+    }
+    
+    function phone(p) { 
+      return p is string && 
+             p.matches('^(\\+91|0)?[6-9]\\d{9}$'); 
+    }
+    
+    // ============================================
+    // ADMIN COLLECTION - Core Access Control
+    // ============================================
+    
+    match /admins/{uid} {
+      // Users can read their own admin status
+      allow read: if authed() && request.auth.uid == uid;
+      // Only create manually via Firebase Console
+      allow write: if false;
+    }
+    
+    // ============================================
+    // ORDERS COLLECTION - Admin Only
+    // ============================================
+    
+    match /orders/{orderId} {
+      // Admin can read all orders
+      allow read: if isAdmin();
+      
+      // Admin can create orders
+      allow create: if isAdmin() &&
+                    str(request.resource.data.id, 3, 100) &&
+                    str(request.resource.data.customer, 1, 100) &&
+                    email(request.resource.data.customerEmail) &&
+                    phone(request.resource.data.customerPhone) &&
+                    request.resource.data.status in ['active', 'pending', 'in_transit', 'delivered', 'cancelled'];
+      
+      // Admin can update orders
+      allow update: if isAdmin();
+      
+      // Admin can delete orders
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // PUBLIC ORDER MIRROR - Readable by anyone
+    // Path: orders/{orderId}/public/{docId}
+    // We store a sanitized snapshot for public tracking views.
+    // ============================================
+    match /orders/{orderId}/public/{docId} {
+      // Public read access for tracking
+      allow read: if true;
+      // Only admins may write/update the public mirror
+      allow write: if isAdmin();
+    }
+    
+    // ============================================
+    // ORDER COUNTER - Admin Only
+    // ============================================
+    
+    match /counters/{doc} {
+      allow read, write: if isAdmin();
+    }
+    
+    // ============================================
+    // ENQUIRIES COLLECTION - Public Create, Admin Manage
+    // ============================================
+    
+    match /enquiries/{enquiryId} {
+      // Anyone can create an enquiry (contact form submission)
+      allow create: if str(request.resource.data.name, 1, 100) &&
+                    email(request.resource.data.email) &&
+                    request.resource.data.phone.matches('^[0-9]{10}$') &&
+                    str(request.resource.data.service, 2, 50) &&
+                    request.resource.data.service in ['Express Delivery', 'Ground Transportation', 'Warehousing', 'Supply Chain Solutions'] &&
+                    (!('remarks' in request.resource.data) || str(request.resource.data.remarks, 0, 1000)) &&
+                    request.resource.data.status == 'new';
+      
+      // Only admins can read enquiries
+      allow read: if isAdmin();
+      
+      // Only admins can update enquiries (change status, add notes)
+      allow update: if isAdmin();
+      
+      // Only admins can delete enquiries
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================
+    // FEEDBACK COLLECTION - Public Create, Admin Manage
+    // ============================================
+    
+    match /feedback/{feedbackId} {
+      // Anyone can submit feedback (FIXED: matches actual form fields)
+      allow create: if str(request.resource.data.orderId, 3, 100) &&
+                    str(request.resource.data.name, 1, 100) &&
+                    request.resource.data.rating is int &&
+                    request.resource.data.rating >= 1 && 
+                    request.resource.data.rating <= 5 &&
+                    (!('comments' in request.resource.data) || str(request.resource.data.comments, 0, 1000));
+      
+      // Only admins can read feedback
+      allow read: if isAdmin();
+      
+      // Only admins can update feedback
+      allow update: if isAdmin();
+      
+      // Only admins can delete feedback
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================
+    // FEEDBACK LINKS COLLECTION - Token System
+    // ============================================
+    
+    match /feedbackLinks/{token} {
+      // Anyone can read feedback links (to validate tokens)
+      allow read: if true;
+      
+      // Only admins can create/update/delete feedback links
+      allow write: if isAdmin();
+    }
+    
+    // ============================================
+    // TEST COLLECTION - Development Only
+    // ============================================
+    
+    match /test/{docId} {
+      // Allow connection test writes (remove in production if not needed)
+      allow write: if isAdmin();
+      allow read: if isAdmin();
+    }
+    
+    // ============================================
+    // DEFAULT DENY ALL
+    // ============================================
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function authed() { return request.auth != null; }
+    
+    // Replace 'admin@yourdomain.com' with your actual admin email
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'admin@yourdomain.com';
+    }
+
+    match /orders/{orderId}/{fileName} {
+      allow read: if authed();
+      allow create: if isAdmin()
+                    && request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType in ['image/jpeg','image/png','image/webp','application/pdf','text/plain'];
+      allow delete: if isAdmin();
+      allow update: if false;
+    }
+
+    match /profiles/{uid}/avatar/{fileName} {
+      allow read: if authed();
+      allow create, update: if authed() && request.auth.uid == uid
+                    && request.resource.size < 2 * 1024 * 1024
+                    && request.resource.contentType in ['image/jpeg','image/png','image/webp'];
+      allow delete: if authed() && request.auth.uid == uid;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,277 @@
+/* ============================================
+   IMAGE SLIDESHOW STYLES
+   ============================================ */
+
+.slideshow-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Make slideshow flush with header on home page */
+.slideshow-hero .slideshow-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  gap: 0;
+  margin: 0;
+}
+
+.slideshow-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 20 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(30, 64, 175, 0.2),
+              0 0 0 1px rgba(30, 64, 175, 0.1);
+  background: #f1f5f9;
+}
+
+/* Remove decorations for hero variant */
+.slideshow-hero .slideshow-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.slideshow-hero .slide img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Slides */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  /* Enhance visual brightness & color without washing out details */
+  filter: brightness(1.1) contrast(1.08) saturate(1.12);
+  transition: filter 0.6s ease, transform 0.3s ease;
+  transform: scale(1);
+}
+
+/* Slight interactive boost on active slide for subtle emphasis */
+.slide.active img {
+  filter: brightness(1.15) contrast(1.1) saturate(1.15);
+  transform: scale(1.02);
+}
+
+/* Hero variant - even more vibrant with Ken Burns effect */
+.slideshow-hero .slide img {
+  filter: brightness(1.2) contrast(1.1) saturate(1.2);
+  transform: scale(1.0);
+  animation: kenBurns 12s ease-in-out infinite alternate;
+}
+
+.slideshow-hero .slide.active img {
+  filter: brightness(1.25) contrast(1.12) saturate(1.25);
+}
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1.0);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+/* Mobile tuning: Reduce brightness a touch to prevent overexposure on small screens */
+@media (max-width: 480px) {
+  .slide img {
+    filter: brightness(1.1) contrast(1.05) saturate(1.06);
+  }
+  .slide.active img {
+    filter: brightness(1.15) contrast(1.06) saturate(1.08);
+  }
+  
+  /* Reduce Ken Burns effect on mobile for performance */
+  .slideshow-hero .slide img {
+    animation: kenBurnsMobile 15s ease-in-out infinite alternate;
+  }
+  
+  @keyframes kenBurnsMobile {
+    0% {
+      transform: scale(1.0);
+    }
+    100% {
+      transform: scale(1.03);
+    }
+  }
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 10;
+}
+
+/* Slide Controls */
+.slide-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  opacity: 0.7;
+}
+
+.slide-control:hover {
+  background: rgba(30, 64, 175, 0.9);
+  border-color: rgba(30, 64, 175, 1);
+  transform: translateY(-50%) scale(1.15);
+  opacity: 1;
+  box-shadow: 0 4px 20px rgba(30, 64, 175, 0.4);
+}
+
+.slide-control.prev {
+  left: 1.5rem;
+}
+
+.slide-control.next {
+  right: 1.5rem;
+}
+
+/* Slide Indicators */
+.slide-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  backdrop-filter: blur(4px);
+}
+
+.indicator.active {
+  background: white;
+  transform: scale(1.3);
+  border-color: white;
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.5);
+}
+
+.indicator:hover {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: white;
+  transform: scale(1.15);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .slideshow-wrapper {
+    aspect-ratio: 16 / 7;
+    border-radius: 16px;
+  }
+
+  .slide-control {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .slide-control.prev {
+    left: 1rem;
+  }
+
+  .slide-control.next {
+    right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .slideshow-wrapper {
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+  }
+
+  .slide-control {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .slide-control.prev {
+    left: 0.8rem;
+  }
+
+  .slide-control.next {
+    right: 0.8rem;
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slideshow-wrapper {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  .slide-control {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
+
+  .slide-control.prev {
+    left: 0.5rem;
+  }
+
+  .slide-control.next {
+    right: 0.5rem;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+  }
+
+  .slide-indicators {
+    gap: 0.5rem;
+  }
+}

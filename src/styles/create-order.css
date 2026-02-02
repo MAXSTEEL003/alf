@@ -1,0 +1,439 @@
+/* ============================================
+   CREATE ORDER PAGE - MODERN ENHANCED DESIGN
+   ============================================ */
+
+/* Page background with subtle gradients */
+.create-order-container {
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(0, 212, 170, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(255, 51, 102, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0, 212, 170, 0.03) 0%, transparent 50%);
+  position: relative;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem);
+}
+
+/* Main container with proper centering */
+.create-order-container > * {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Simple, centered title design */
+.create-order-container h2 {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  text-align: center;
+  font-weight: 700;
+  margin: 0 auto clamp(2rem, 5vw, 3rem);
+  background: linear-gradient(135deg, 
+    var(--text-color) 0%, 
+    var(--primary-color) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  max-width: 600px;
+  position: relative;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
+   FORM WRAPPER - Clean design
+   ============================================ */
+.order-form-wrapper {
+  background: var(--card-bg);
+  border: 2px solid #60A5FA;
+  border-radius: clamp(16px, 3vw, 20px);
+  padding: clamp(2rem, 5vw, 2.5rem);
+  position: relative;
+  box-shadow: var(--card-shadow);
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+/* ============================================
+   FORM STYLING - Enhanced modern design
+   ============================================ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vw, 2.5rem);
+  position: relative;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  animation: fadeInUp 0.6s ease-out calc(0.6s + var(--animation-delay, 0s)) both;
+}
+
+.form label:nth-child(1) { --animation-delay: 0.1s; }
+.form label:nth-child(2) { --animation-delay: 0.2s; }
+.form label:nth-child(3) { --animation-delay: 0.3s; }
+.form label:nth-child(4) { --animation-delay: 0.4s; }
+
+.form label > span {
+  color: var(--text-color);
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+
+
+/* ============================================
+   INPUT & TEXTAREA - Clean design
+   ============================================ */
+.form input,
+.form textarea {
+  padding: clamp(0.875rem, 3vw, 1rem) clamp(1rem, 4vw, 1.25rem);
+  border-radius: clamp(10px, 2vw, 12px);
+  border: 2px solid #60A5FA;
+  background: var(--card-bg-light);
+  color: var(--text-color);
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
+  font-family: var(--font-family);
+  font-weight: 400;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+  color: var(--text-lighter);
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.form input:focus,
+.form textarea:focus {
+  outline: none;
+  border-color: #3B82F6;
+  background: rgba(59, 130, 246, 0.05);
+  box-shadow: var(--focus-shadow);
+}
+
+.form input:hover:not(:focus),
+.form textarea:hover:not(:focus) {
+  border-color: #60A5FA;
+  background: rgba(59, 130, 246, 0.03);
+}
+
+/* Textarea specific enhancements */
+.form textarea {
+  resize: vertical;
+  min-height: clamp(120px, 20vw, 150px);
+  max-height: 300px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   BUTTON STYLING - Enhanced modern design
+   ============================================ */
+.form > div {
+  display: flex;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: clamp(2rem, 5vw, 3rem);
+  animation: fadeInUp 0.8s ease-out 1s both;
+}
+
+.form .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.875rem, 3vw, 1rem) clamp(2rem, 5vw, 2.5rem);
+  font-size: clamp(0.95rem, 2.5vw, 1rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
+  border-radius: clamp(10px, 2vw, 12px);
+  cursor: pointer;
+  background: linear-gradient(135deg, #3B82F6, #1E40AF);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  min-width: clamp(180px, 35vw, 220px);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.form .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 0;
+}
+
+.form .btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.form .btn:hover:not(:disabled)::before {
+  width: 400px;
+  height: 400px;
+}
+
+.form .btn:hover:not(:disabled)::after {
+  opacity: 0;
+}
+
+.form .btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #1E40AF, #1E3A8A);
+  box-shadow: var(--hover-shadow);
+}
+
+.form .btn:active:not(:disabled) {
+  transform: translateY(0px);
+}
+
+.form .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, 
+    rgba(150, 150, 150, 0.6), 
+    rgba(100, 100, 100, 0.6));
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.form .btn:disabled:hover {
+  transform: translateY(0);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Error/Alert messages */
+.alert {
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  animation: shake 0.5s ease-in-out both;
+  transform: translateZ(0);
+}
+
+.alert-danger {
+  background: rgba(255, 82, 82, 0.15);
+  color: #FF5252;
+  border: 1px solid rgba(255, 82, 82, 0.3);
+  border-left: 4px solid #FF5252;
+}
+
+.alert-success {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--success-color);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-left: 4px solid var(--success-color);
+}
+
+.alert-info {
+  background: rgba(0, 212, 170, 0.15);
+  color: var(--primary-color);
+  border: 1px solid rgba(0, 212, 170, 0.3);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Success animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Loading state */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.loading-spinner::before {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 1rem;
+  border: 3px solid rgba(0, 212, 170, 0.2);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Form group with success/error states */
+.form-group {
+  position: relative;
+}
+
+.form-group.has-error input,
+.form-group.has-error textarea {
+  border-color: #FF5252;
+  background: rgba(255, 82, 82, 0.05);
+}
+
+.form-group.has-success input,
+.form-group.has-success textarea {
+  border-color: var(--success-color);
+  background: rgba(76, 175, 80, 0.05);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile optimizations
+   ============================================ */
+@media (max-width: 768px) {
+  .create-order-container {
+    padding: 2rem 1rem;
+  }
+  
+  .order-form-wrapper {
+    padding: 2rem;
+    border-radius: 16px;
+  }
+  
+  .form {
+    gap: 2rem;
+  }
+  
+  .form > div {
+    flex-direction: column;
+    margin-top: 2rem;
+  }
+  
+  .form .btn {
+    width: 100%;
+    min-width: unset;
+    padding: 1.25rem 2rem;
+  }
+  
+  .form input,
+  .form textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-order-container {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .order-form-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .form label > span {
+    font-size: 0.875rem;
+  }
+}
+
+/* Accessibility */
+.form input:focus-visible,
+.form textarea:focus-visible,
+.form .btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   ENHANCED PERFORMANCE & ACCESSIBILITY
+   ============================================ */
+
+/* Performance optimizations */
+.create-order-container *,
+.create-order-container *::before,
+.create-order-container *::after {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enhanced accessibility */
+.form input:focus-visible,
+.form textarea:focus-visible,
+.form .btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .create-order-container *,
+  .order-form-wrapper::before,
+  .create-order-container h2::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Enhanced loading state */
+.form .btn:disabled {
+  position: relative;
+}
+
+.form .btn:disabled::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

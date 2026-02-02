@@ -1,0 +1,50 @@
+node_modules
+dist
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+._*
+
+# Legacy/backup artifacts
+src/styles/tracking.css.backup
+vite.config.js
+AdminHeader-Updated.jsx
+
+# Logs and temp files
+*.log
+*.log.*
+*.tmp
+*.swp
+*.orig
+*.bak
+
+# Local env variants
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor/temporary
+*.log
+*.log.*
+*.tmp
+*.swp
+*.orig
+*.bak
+
+# Local env variants
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Legacy/backup artifacts
+src/styles/tracking.css.backup
+vite.config.js
