@@ -218,7 +218,7 @@ export default function About() {
                 <i className="fas fa-phone"></i>
               </div>
               <h4>Phone</h4>
-              <p>+1 (555) 123-4567</p>
+              <p>6360939302</p>
               <p className="contact-label">Available 24/7</p>
             </div>
 
@@ -227,7 +227,7 @@ export default function About() {
                 <i className="fas fa-envelope"></i>
               </div>
               <h4>Email</h4>
-              <p>support@alflogistics.com</p>
+              <p>alfattahulogistics@gmail.com</p>
               <p className="contact-label">Response within 2 hours</p>
             </div>
 
@@ -236,7 +236,7 @@ export default function About() {
                 <i className="fas fa-map-marker-alt"></i>
               </div>
               <h4>Address</h4>
-              <p>123 Logistics Boulevard</p>
+              <p>#1/1,5th Cross,Brindavan Nagar,Mathikere,Bangalore-54</p>
               <p className="contact-label">San Francisco, CA 94105</p>
             </div>
 
